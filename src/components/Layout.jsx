@@ -81,8 +81,8 @@ export default function Layout() {
         )}
       </div>
 
-      {/* Mobile FAB — floating "+" button above the bottom nav bar */}
-      {isMobile && location.pathname !== '/create' && (
+      {/* Mobile FAB — only on Browse page */}
+      {isMobile && location.pathname === '/' && (
         <Link to="/create" style={{
           position: 'fixed',
           bottom: 76,
