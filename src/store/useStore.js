@@ -5,12 +5,14 @@ const useStore = create((set) => ({
   profile: null,
   unreadCount: 0,
   notifCount: 0,
+  threads: [],
 
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
   setUnreadCount: (count) => set({ unreadCount: count }),
   setNotifCount: (count) => set({ notifCount: count }),
-  clearUser: () => set({ user: null, profile: null, unreadCount: 0, notifCount: 0 }),
+  setThreads: (threads) => set({ threads }),
+  clearUser: () => set({ user: null, profile: null, unreadCount: 0, notifCount: 0, threads: [] }),
 }))
 
 export default useStore
