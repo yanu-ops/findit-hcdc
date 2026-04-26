@@ -17,10 +17,10 @@ import MyPosts from './pages/MyPosts'
 import Profile from './pages/Profile'
 
 export default function App() {
-  const { setUser, setProfile, clearUser } = useStore()
+  const { setUser, setProfile, clearUser, setOnlineUsers, user } = useStore()
 
   useEffect(() => {
-    // Get initial session
+    // ── Initial session ──
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user)
@@ -28,7 +28,7 @@ export default function App() {
       }
     })
 
-    // Listen for auth changes
+    // ── Auth state changes ──
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (session?.user) {
@@ -43,6 +43,54 @@ export default function App() {
     return () => subscription.unsubscribe()
   }, [])
 
+  // ── Presence channel — starts once user is known ──
+  useEffect(() => {
+    if (!user?.id) return
+
+    const presenceChannel = supabase.channel('app-presence', {
+      config: { presence: { key: user.id } },
+    })
+
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const state = presenceChannel.presenceState()
+        // state keys are the presence keys (user IDs)
+        setOnlineUsers(new Set(Object.keys(state)))
+      })
+      .on('presence', { event: 'join' }, ({ key }) => {
+        setOnlineUsers(prev => new Set([...prev, key]))
+      })
+      .on('presence', { event: 'leave' }, ({ key }) => {
+        setOnlineUsers(prev => {
+          const next = new Set(prev)
+          next.delete(key)
+          return next
+        })
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.track({ user_id: user.id, online_at: new Date().toISOString() })
+        }
+      })
+
+    // ── Listen for users table changes to keep profile in sync ──
+    const profileChannel = supabase
+      .channel(`profile-sync-${user.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${user.id}` },
+        (payload) => {
+          setProfile(payload.new)
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(presenceChannel)
+      supabase.removeChannel(profileChannel)
+    }
+  }, [user?.id])
+
   async function fetchProfile(userId) {
     const { data } = await supabase
       .from('users')
@@ -55,11 +103,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/" element={<Browse />} />

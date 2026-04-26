@@ -4,12 +4,10 @@ import { supabase } from '../lib/supabase'
 import useStore from '../store/useStore'
 import LoadingSpinner from '../components/LoadingSpinner'
 
-const DARK_RED = '#8B0000'
-
 export default function Chat() {
   const { postId, userId } = useParams()
   const navigate = useNavigate()
-  const { user, setUnreadCount, setNotifCount } = useStore()
+  const { user, profile, setUnreadCount, setNotifCount, onlineUsers } = useStore()
 
   const [messages, setMessages]   = useState([])
   const [post, setPost]           = useState(null)
@@ -17,10 +15,11 @@ export default function Chat() {
   const [input, setInput]         = useState('')
   const [loading, setLoading]     = useState(true)
   const [sending, setSending]     = useState(false)
-  const bottomRef = useRef(null)
+  const bottomRef  = useRef(null)
   const channelRef = useRef(null)
 
-  // Mark all unread messages in this thread as read, then sync global counts
+  const isOtherOnline = onlineUsers.has(userId)
+
   const markRead = useCallback(async () => {
     await supabase
       .from('messages')
@@ -30,7 +29,6 @@ export default function Chat() {
       .eq('receiver_id', user.id)
       .eq('is_read', false)
 
-    // Re-fetch global unread count so Navbar badge and Inbox both update
     const { data } = await supabase
       .from('messages')
       .select('id')
@@ -63,57 +61,45 @@ export default function Chat() {
     init()
     markRead()
 
-    // Real-time: new messages in this thread
+    // ── Messages realtime ──
     channelRef.current = supabase
       .channel(`chat-${postId}-${userId}-${user.id}`)
       .on(
         'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `post_id=eq.${postId}`,
-        },
+        { event: 'INSERT', schema: 'public', table: 'messages', filter: `post_id=eq.${postId}` },
         (payload) => {
           const msg = payload.new
           const isRelevant =
             (msg.sender_id === user.id && msg.receiver_id === userId) ||
             (msg.sender_id === userId && msg.receiver_id === user.id)
           if (!isRelevant) return
-
-          setMessages(prev => {
-            // Avoid duplicates
-            if (prev.find(m => m.id === msg.id)) return prev
-            return [...prev, msg]
-          })
-
-          // If the incoming message is for us, mark it read immediately
-          if (msg.receiver_id === user.id) {
-            markRead()
-          }
+          setMessages(prev => prev.find(m => m.id === msg.id) ? prev : [...prev, msg])
+          if (msg.receiver_id === user.id) markRead()
         }
       )
       .on(
         'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'messages',
-          filter: `post_id=eq.${postId}`,
-        },
+        { event: 'UPDATE', schema: 'public', table: 'messages', filter: `post_id=eq.${postId}` },
         (payload) => {
           const updated = payload.new
-          setMessages(prev =>
-            prev.map(m => m.id === updated.id ? { ...m, ...updated } : m)
-          )
+          setMessages(prev => prev.map(m => m.id === updated.id ? { ...m, ...updated } : m))
         }
       )
       .subscribe()
 
+    // ── Other user profile realtime (avatar sync) ──
+    const userChannel = supabase
+      .channel(`chat-user-${userId}`)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${userId}` },
+        (payload) => setOtherUser(payload.new)
+      )
+      .subscribe()
+
     return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current)
-      }
+      if (channelRef.current) supabase.removeChannel(channelRef.current)
+      supabase.removeChannel(userChannel)
     }
   }, [postId, userId, user.id, markRead])
 
@@ -146,7 +132,20 @@ export default function Chat() {
 
   const isOwner    = user?.id === post?.user_id
   const isResolved = post?.status === 'resolved'
-  const initial    = otherUser?.full_name?.charAt(0).toUpperCase() || '?'
+
+  // Find the index of the last message sent by me that the other person has read
+  const lastSeenIdx = (() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].sender_id === user.id && messages[i].is_read) return i
+    }
+    return -1
+  })()
+
+  // Avatar helpers
+  const myAvatar     = profile?.avatar_url
+  const myInitial    = profile?.full_name?.charAt(0).toUpperCase() || '?'
+  const otherAvatar  = otherUser?.avatar_url
+  const otherInitial = otherUser?.full_name?.charAt(0).toUpperCase() || '?'
 
   return (
     <div style={{ maxWidth: 640, margin: '0 auto', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 8rem)' }}>
@@ -164,13 +163,30 @@ export default function Chat() {
           </svg>
         </button>
 
-        {/* Avatar */}
-        <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 15, flexShrink: 0 }}>
-          {initial}
+        {/* Other user avatar with online dot */}
+        <div style={{ position: 'relative', flexShrink: 0 }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 15, overflow: 'hidden' }}>
+            {otherAvatar
+              ? <img src={otherAvatar} alt={otherUser?.full_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : otherInitial}
+          </div>
+          {/* Online / Offline dot */}
+          <span style={{
+            position: 'absolute', bottom: 1, right: 1,
+            width: 11, height: 11, borderRadius: '50%',
+            background: isOtherOnline ? '#16A34A' : '#DC2626',
+            border: '2px solid #fff',
+            transition: 'background 0.3s',
+          }} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A', margin: 0 }}>{otherUser?.full_name}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A', margin: 0 }}>{otherUser?.full_name}</p>
+            <span style={{ fontSize: 11, fontWeight: 500, color: isOtherOnline ? '#16A34A' : '#DC2626' }}>
+              {isOtherOnline ? '● Online' : '● Offline'}
+            </span>
+          </div>
           <p style={{ fontSize: 12, color: '#64748B', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             <span style={{ color: post?.type === 'lost' ? '#DC2626' : '#16A34A', marginRight: 4 }}>●</span>
             {post?.title}
@@ -191,13 +207,13 @@ export default function Chat() {
 
       {/* Resolved banner */}
       {isResolved && (
-        <div style={{ background: '#F0FDF4', border: '1.5px solid #BBF7D0', borderRadius: 12, padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#166534', marginBottom: 10 }}>
+        <div style={{ background: '#F0FDF4', border: '1.5px solid #BBF7D0', borderRadius: 12, padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#166634', marginBottom: 10 }}>
           ✓ This item has been resolved
         </div>
       )}
 
       {/* ── Messages ── */}
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, padding: '4px 2px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6, padding: '4px 2px' }}>
         {messages.length === 0 && (
           <div style={{ textAlign: 'center', padding: '48px 0', color: '#94A3B8', fontSize: 14 }}>
             Say hi! Start the conversation to recover the item.
@@ -205,15 +221,16 @@ export default function Chat() {
         )}
 
         {messages.map((msg, idx) => {
-          const isMe = msg.sender_id === user.id
-          const prevMsg = messages[idx - 1]
+          const isMe       = msg.sender_id === user.id
+          const prevMsg    = messages[idx - 1]
           const showDateSep = !prevMsg || !isSameDay(new Date(prevMsg.sent_at), new Date(msg.sent_at))
+          const isLastSeen  = isMe && idx === lastSeenIdx
 
           return (
             <div key={msg.id}>
               {/* Date separator */}
               {showDateSep && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '8px 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '10px 0 6px' }}>
                   <div style={{ flex: 1, height: 1, background: '#F1F5F9' }} />
                   <span style={{ fontSize: 11, color: '#94A3B8', fontWeight: 500, whiteSpace: 'nowrap' }}>
                     {formatDateSep(msg.sent_at)}
@@ -222,29 +239,55 @@ export default function Chat() {
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start' }}>
-                <div style={{
-                  maxWidth: '75%',
-                  padding: '10px 14px',
-                  borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                  fontSize: 14,
-                  lineHeight: 1.5,
-                  background: isMe ? '#2563EB' : '#fff',
-                  color: isMe ? '#fff' : '#0F172A',
-                  boxShadow: isMe ? '0 2px 8px rgba(37,99,235,0.25)' : '0 1px 4px rgba(0,0,0,0.07)',
-                  border: isMe ? 'none' : '1.5px solid #F1F5F9',
-                }}>
-                  <div>{msg.content}</div>
-                  <div style={{ fontSize: 10, marginTop: 4, textAlign: 'right', color: isMe ? 'rgba(255,255,255,0.6)' : '#94A3B8', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
-                    {new Date(msg.sent_at).toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' })}
-                    {/* Read receipt for sent messages */}
-                    {isMe && (
-                      <svg viewBox="0 0 24 24" fill="none" stroke={msg.is_read ? '#93C5FD' : 'rgba(255,255,255,0.4)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12 }}>
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    )}
+              {/* Bubble row */}
+              <div style={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: 7 }}>
+                {/* Other person avatar (left side) */}
+                {!isMe && (
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 11, flexShrink: 0, overflow: 'hidden', marginBottom: 2 }}>
+                    {otherAvatar
+                      ? <img src={otherAvatar} alt={otherUser?.full_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : otherInitial}
                   </div>
+                )}
+
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMe ? 'flex-end' : 'flex-start', maxWidth: '75%' }}>
+                  <div style={{
+                    padding: '10px 14px',
+                    borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                    fontSize: 14, lineHeight: 1.5,
+                    background: isMe ? '#2563EB' : '#fff',
+                    color: isMe ? '#fff' : '#0F172A',
+                    boxShadow: isMe ? '0 2px 8px rgba(37,99,235,0.2)' : '0 1px 4px rgba(0,0,0,0.07)',
+                    border: isMe ? 'none' : '1.5px solid #F1F5F9',
+                  }}>
+                    {msg.content}
+                    <div style={{ fontSize: 10, marginTop: 4, textAlign: 'right', color: isMe ? 'rgba(255,255,255,0.55)' : '#94A3B8' }}>
+                      {new Date(msg.sent_at).toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                  </div>
+
+                  {/* ── Seen indicator — shows below the last message they've read ── */}
+                  {isLastSeen && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 3, marginRight: 2 }}>
+                      {/* Other user's mini avatar */}
+                      <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 8, overflow: 'hidden', flexShrink: 0 }}>
+                        {otherAvatar
+                          ? <img src={otherAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          : otherInitial}
+                      </div>
+                      <span style={{ fontSize: 11, color: '#94A3B8' }}>Seen</span>
+                    </div>
+                  )}
                 </div>
+
+                {/* My avatar (right side) */}
+                {isMe && (
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 11, flexShrink: 0, overflow: 'hidden', marginBottom: 2 }}>
+                    {myAvatar
+                      ? <img src={myAvatar} alt="me" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : myInitial}
+                  </div>
+                )}
               </div>
             </div>
           )
@@ -299,7 +342,7 @@ function isSameDay(a, b) {
 
 function formatDateSep(ts) {
   const date = new Date(ts)
-  const now = new Date()
+  const now  = new Date()
   const diffDays = Math.floor((now - date) / 86400000)
   if (diffDays === 0) return 'Today'
   if (diffDays === 1) return 'Yesterday'
