@@ -15,12 +15,23 @@ function useIsMobile() {
   return v
 }
 
-/* ─────────────────────────────────────────────────────────────
-   FormCard lives OUTSIDE Register so React never unmounts it
-   on a state update (which would kill the focused input).
-   All mutable values come in as props — no closures over the
-   parent's render scope that could cause identity changes.
-───────────────────────────────────────────────────────────── */
+function EyeOpen() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}>
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+function EyeOff() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}>
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
+  )
+}
+
 function FormCard({
   isMobile,
   form, setForm,
@@ -45,8 +56,15 @@ function FormCard({
   const onFocus = e => { e.target.style.boxShadow = `0 0 0 2.5px ${DR}` }
   const onBlur  = e => { e.target.style.boxShadow = 'none' }
 
+  /* Icon wrappers */
+  const IconWrap = ({ children }) => (
+    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', display: 'flex', pointerEvents: 'none' }}>
+      {children}
+    </span>
+  )
+
   return (
-    <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 400 }}>
+    <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 420 }}>
 
       {/* Logo — mobile only */}
       {isMobile && (
@@ -61,11 +79,11 @@ function FormCard({
         </div>
       )}
 
-      <h1 style={{ fontSize: isMobile ? 30 : 36, fontWeight: 800, color: '#1E2A5E', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
-        Sign Up
+      <h1 style={{ fontSize: isMobile ? 28 : 34, fontWeight: 800, color: '#1E2A5E', margin: '0 0 4px', letterSpacing: '-0.5px' }}>
+        Create Account
       </h1>
-      <p style={{ fontSize: 14, color: '#64748B', margin: '0 0 24px' }}>
-        Create your FindIt @ HCDC account
+      <p style={{ fontSize: 14, color: '#64748B', margin: '0 0 22px' }}>
+        Sign up with your HCDC email to get started
       </p>
 
       {/* Error banner */}
@@ -78,17 +96,19 @@ function FormCard({
         </div>
       )}
 
-      <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-        {/* Full name */}
+        {/* Full Name */}
         <div>
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>Username</label>
+          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>
+            Full Name <span style={{ color: DR }}>*</span>
+          </label>
           <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', display: 'flex', pointerEvents: 'none' }}>
+            <IconWrap>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}>
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
               </svg>
-            </span>
+            </IconWrap>
             <input
               type="text" required
               value={form.full_name}
@@ -102,13 +122,15 @@ function FormCard({
 
         {/* Email */}
         <div>
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>Email</label>
+          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>
+            HCDC Email <span style={{ color: DR }}>*</span>
+          </label>
           <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', display: 'flex', pointerEvents: 'none' }}>
+            <IconWrap>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}>
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
               </svg>
-            </span>
+            </IconWrap>
             <input
               type="email" required
               value={form.email}
@@ -118,17 +140,50 @@ function FormCard({
               onFocus={onFocus} onBlur={onBlur}
             />
           </div>
+          <p style={{ fontSize: 11, color: '#94A3B8', margin: '5px 0 0' }}>Only @hcdc.edu.ph email addresses are allowed.</p>
+        </div>
+
+        {/* ID Number */}
+        <div>
+          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>
+            ID Number <span style={{ color: DR }}>*</span>
+          </label>
+          <div style={{ position: 'relative' }}>
+            <IconWrap>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}>
+                <rect x="2" y="5" width="20" height="14" rx="2" /><circle cx="8" cy="12" r="2" /><path d="M13 11h4M13 15h3" />
+              </svg>
+            </IconWrap>
+            <input
+              type="text" required
+              value={form.student_id}
+              onChange={e => {
+                const val = e.target.value.replace(/\D/g, '').slice(0, 8)
+                setForm(f => ({ ...f, student_id: val }))
+              }}
+              placeholder="8-digit ID number"
+              maxLength={8}
+              inputMode="numeric"
+              style={fieldBase}
+              onFocus={onFocus} onBlur={onBlur}
+            />
+          </div>
+          <p style={{ fontSize: 11, color: '#94A3B8', margin: '5px 0 0' }}>
+            {form.student_id.length}/8 digits
+          </p>
         </div>
 
         {/* Password */}
         <div>
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>Password</label>
+          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>
+            Password <span style={{ color: DR }}>*</span>
+          </label>
           <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', display: 'flex', pointerEvents: 'none' }}>
+            <IconWrap>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}>
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-            </span>
+            </IconWrap>
             <input
               type={showPass ? 'text' : 'password'} required
               value={form.password}
@@ -137,24 +192,24 @@ function FormCard({
               style={{ ...fieldBase, paddingRight: 44 }}
               onFocus={onFocus} onBlur={onBlur}
             />
-            <button type="button" onClick={() => setShowPass(s => !s)} style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: 0, display: 'flex' }}>
-              {showPass
-                ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-                : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-              }
+            <button type="button" onClick={() => setShowPass(s => !s)}
+              style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: 0, display: 'flex' }}>
+              {showPass ? <EyeOff /> : <EyeOpen />}
             </button>
           </div>
         </div>
 
-        {/* Confirm password */}
+        {/* Confirm Password */}
         <div>
-          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>Confirm Password</label>
+          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 7 }}>
+            Confirm Password <span style={{ color: DR }}>*</span>
+          </label>
           <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', display: 'flex', pointerEvents: 'none' }}>
+            <IconWrap>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}>
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-            </span>
+            </IconWrap>
             <input
               type={showConfirm ? 'text' : 'password'} required
               value={form.confirm}
@@ -163,11 +218,9 @@ function FormCard({
               style={{ ...fieldBase, paddingRight: 44 }}
               onFocus={onFocus} onBlur={onBlur}
             />
-            <button type="button" onClick={() => setShowConfirm(s => !s)} style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: 0, display: 'flex' }}>
-              {showConfirm
-                ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
-                : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-              }
+            <button type="button" onClick={() => setShowConfirm(s => !s)}
+              style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: 0, display: 'flex' }}>
+              {showConfirm ? <EyeOff /> : <EyeOpen />}
             </button>
           </div>
         </div>
@@ -190,18 +243,20 @@ function FormCard({
         </label>
 
         {/* Submit */}
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', background: loading ? '#A01830' : DR, color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, letterSpacing: '0.04em', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 4 }}
+        <button
+          type="submit" disabled={loading}
+          style={{ width: '100%', padding: '14px', background: loading ? '#A01830' : DR, color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, letterSpacing: '0.04em', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 4 }}
           onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#6B0000' }}
           onMouseLeave={e => { if (!loading) e.currentTarget.style.background = DR }}
         >
           {loading
-            ? <><span style={{ width: 18, height: 18, borderRadius: '50%', border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 0.7s linear infinite', flexShrink: 0 }} />Creating…</>
-            : 'CREATE ACCOUNT'
+            ? <><span style={{ width: 18, height: 18, borderRadius: '50%', border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', animation: 'spin 0.7s linear infinite', flexShrink: 0 }} />Creating account…</>
+            : 'SIGN UP'
           }
         </button>
       </form>
 
-      <p style={{ textAlign: 'center', fontSize: 14, color: '#64748B', marginTop: 22 }}>
+      <p style={{ textAlign: 'center', fontSize: 14, color: '#64748B', marginTop: 20 }}>
         Already have an account?{' '}
         <Link to="/login" style={{ color: DR, fontWeight: 700, textDecoration: 'none' }}>Sign in here</Link>
       </p>
@@ -209,10 +264,10 @@ function FormCard({
   )
 }
 
-/* ── Main page component ── */
+/* ── Main page ── */
 export default function Register() {
   const isMobile = useIsMobile()
-  const [form, setForm]               = useState({ full_name: '', email: '', password: '', confirm: '', agree: false })
+  const [form, setForm]               = useState({ full_name: '', email: '', student_id: '', password: '', confirm: '', agree: false })
   const [showPass, setShowPass]       = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError]             = useState('')
@@ -222,16 +277,25 @@ export default function Register() {
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
-    if (!form.agree)                    return setError('You must agree to the terms to continue.')
-    if (form.password !== form.confirm) return setError('Passwords do not match.')
-    if (form.password.length < 6)      return setError('Password must be at least 6 characters.')
+
+    // Validations
+    if (!form.agree)
+      return setError('You must agree to the Terms of Use to continue.')
+    if (!form.email.toLowerCase().endsWith('@hcdc.edu.ph'))
+      return setError('Only @hcdc.edu.ph email addresses are allowed.')
+    if (form.student_id.length !== 8)
+      return setError('ID number must be exactly 8 digits.')
+    if (form.password !== form.confirm)
+      return setError('Passwords do not match.')
+    if (form.password.length < 6)
+      return setError('Password must be at least 6 characters.')
 
     setLoading(true)
     try {
       const { data: authData, error: authErr } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
-        options: { data: { full_name: form.full_name, student_id: '' } },
+        options: { data: { full_name: form.full_name, student_id: form.student_id } },
       })
       if (authErr) { setError(authErr.message); setLoading(false); return }
       if (!authData.user) { setError('Registration failed. Please try again.'); setLoading(false); return }
@@ -243,13 +307,14 @@ export default function Register() {
         await supabase.from('users').insert({
           id: authData.user.id,
           full_name: form.full_name,
-          student_id: '',
+          student_id: form.student_id,
           email: form.email,
+          contact_number: '',
         })
       }
 
       setAlert({ type: 'success', text: 'Account created! Welcome to FindIt @ HCDC.' })
-      setForm({ full_name: '', email: '', password: '', confirm: '', agree: false })
+      setForm({ full_name: '', email: '', student_id: '', password: '', confirm: '', agree: false })
     } catch {
       setError('Something went wrong. Please try again.')
     }
@@ -264,14 +329,14 @@ export default function Register() {
     onSubmit: handleSubmit,
   }
 
-  /* ── Mobile ── */
+  /* Mobile */
   if (isMobile) return (
     <>
       {alert && <Alert message={alert.text} type={alert.type} onClose={() => setAlert(null)} />}
       <div style={{ minHeight: '100vh', background: '#F4F5FA', display: 'flex', flexDirection: 'column', fontFamily: 'DM Sans, sans-serif' }}>
         <div style={{ height: 8, background: `linear-gradient(90deg, ${DR} 0%, #5A0010 100%)`, flexShrink: 0 }} />
-        <div style={{ flex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '40px 24px 48px', overflowY: 'auto' }}>
-          <div style={{ width: '100%', maxWidth: 420, background: '#fff', borderRadius: 20, padding: '32px 24px', boxShadow: '0 4px 32px rgba(0,0,0,0.08)', border: '1px solid #F1F5F9' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '32px 20px 48px', overflowY: 'auto' }}>
+          <div style={{ width: '100%', maxWidth: 440, background: '#fff', borderRadius: 20, padding: '28px 22px', boxShadow: '0 4px 32px rgba(0,0,0,0.08)', border: '1px solid #F1F5F9' }}>
             <FormCard {...formProps} />
           </div>
         </div>
@@ -280,14 +345,14 @@ export default function Register() {
     </>
   )
 
-  /* ── Desktop ── */
+  /* Desktop */
   return (
     <>
       {alert && <Alert message={alert.text} type={alert.type} onClose={() => setAlert(null)} />}
       <div style={{ minHeight: '100vh', display: 'flex', fontFamily: 'DM Sans, sans-serif', background: '#fff' }}>
 
         {/* Left illustration */}
-        <div style={{ flex: 1.2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px 40px', position: 'relative', minHeight: '100vh' }}>
+        <div style={{ flex: 1.1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px 40px', position: 'relative', minHeight: '100vh' }}>
           <div style={{ position: 'absolute', top: 28, left: 36, display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: DR, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ color: '#fff', fontWeight: 800, fontSize: 8, lineHeight: 1.3, textAlign: 'center' }}>HC<br />DC</span>
@@ -311,7 +376,7 @@ export default function Register() {
               </g>
             ))}
             <rect x="224" y="318" width="132" height="26" rx="8" fill={DR} opacity="0.9" />
-            <text x="290" y="335" textAnchor="middle" fill="#fff" style={{ fontSize: 9.5, fontWeight: 700, fontFamily: 'DM Sans, sans-serif' }}>CREATE ACCOUNT</text>
+            <text x="290" y="335" textAnchor="middle" fill="#fff" style={{ fontSize: 9.5, fontWeight: 700, fontFamily: 'DM Sans, sans-serif' }}>SIGN UP</text>
             <rect x="196" y="90" width="8" height="240" rx="4" fill={DR} />
             <circle cx="150" cy="155" r="35" fill="#FFDDB5" />
             <path d="M118 145 Q125 118 150 115 Q175 118 182 145" fill="#1E2A5E" />
@@ -342,7 +407,7 @@ export default function Register() {
         </div>
 
         {/* Right form */}
-        <div style={{ width: 480, minHeight: '100vh', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 32px', background: '#F4F5FA', overflowY: 'auto' }}>
+        <div style={{ width: 500, minHeight: '100vh', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 36px', background: '#F4F5FA', overflowY: 'auto' }}>
           <FormCard {...formProps} />
         </div>
       </div>
