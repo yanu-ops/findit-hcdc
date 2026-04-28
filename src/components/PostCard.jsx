@@ -3,25 +3,17 @@ import { useState, useEffect } from 'react'
 
 const DARK_RED = '#8B0000'
 
-/* ── Category definitions — SVG icons only, no emojis ── */
+/* ── Category SVG icons ── */
 const CAT = {
   Electronics: {
     bg: '#EFF6FF', color: '#1D4ED8',
-    // chip: small icon for filter pills / card overlays
     chip: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0 }}>
         <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
       </svg>
     ),
-    // card: medium icon for mobile horizontal card thumbnail
-    card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
-      </svg>
-    ),
-    // big: large icon for desktop vertical card placeholder
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.7 }}>
+    placeholder: col => (
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.6 }}>
         <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
       </svg>
     ),
@@ -29,17 +21,12 @@ const CAT = {
   Clothing: {
     bg: '#F0FDF4', color: '#15803D',
     chip: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0 }}>
         <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
       </svg>
     ),
-    card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.7 }}>
+    placeholder: col => (
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.6 }}>
         <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
       </svg>
     ),
@@ -47,17 +34,12 @@ const CAT = {
   'ID / Cards': {
     bg: '#FFF7ED', color: '#C2410C',
     chip: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0 }}>
         <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
       </svg>
     ),
-    card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.7 }}>
+    placeholder: col => (
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.6 }}>
         <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
       </svg>
     ),
@@ -65,17 +47,12 @@ const CAT = {
   Bags: {
     bg: '#FDF4FF', color: '#7E22CE',
     chip: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0 }}>
         <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
       </svg>
     ),
-    card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.7 }}>
+    placeholder: col => (
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.6 }}>
         <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
       </svg>
     ),
@@ -83,17 +60,12 @@ const CAT = {
   Books: {
     bg: '#FFFBEB', color: '#B45309',
     chip: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0 }}>
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
       </svg>
     ),
-    card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.7 }}>
+    placeholder: col => (
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.6 }}>
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
       </svg>
     ),
@@ -101,17 +73,12 @@ const CAT = {
   Keys: {
     bg: '#F0FDF4', color: '#15803D',
     chip: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0 }}>
         <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
       </svg>
     ),
-    card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.7 }}>
+    placeholder: col => (
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.6 }}>
         <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
       </svg>
     ),
@@ -119,17 +86,12 @@ const CAT = {
   Wallet: {
     bg: '#FDF2F8', color: '#9D174D',
     chip: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0 }}>
         <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
       </svg>
     ),
-    card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.7 }}>
+    placeholder: col => (
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.6 }}>
         <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
       </svg>
     ),
@@ -137,27 +99,33 @@ const CAT = {
   Other: {
     bg: '#F8FAFC', color: '#475569',
     chip: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0 }}>
         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
       </svg>
     ),
-    card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.7 }}>
+    placeholder: col => (
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.6 }}>
         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
       </svg>
     ),
   },
 }
 
-/* Small inline location pin — replaces the 📍 emoji */
 const PinIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11, flexShrink: 0, display: 'inline', verticalAlign: 'middle', marginRight: 2 }}>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 10, height: 10, flexShrink: 0 }}>
     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+  </svg>
+)
+
+const CalIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 10, height: 10, flexShrink: 0 }}>
+    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
+)
+
+const UserIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 10, height: 10, flexShrink: 0 }}>
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
   </svg>
 )
 
@@ -173,107 +141,168 @@ function useIsMobile() {
 
 export default function PostCard({ post }) {
   const isMobile = useIsMobile()
-  const cat      = CAT[post.category] || CAT.Other
-  const isLost   = post.type === 'lost'
-  const isRes    = post.status === 'resolved'
+  const cat    = CAT[post.category] || CAT.Other
+  const isLost = post.type === 'lost'
+  const isRes  = post.status === 'resolved'
 
-  const badge = isRes
-    ? { bg: '#F1F5F9', color: '#64748B', label: 'Resolved' }
+  const badgeStyle = isRes
+    ? { bg: '#F1F5F9', color: '#475569' }
     : isLost
-      ? { bg: '#FEF2F2', color: '#991B1B', label: 'Lost' }
-      : { bg: '#F0FDF4', color: '#166534', label: 'Found' }
+      ? { bg: 'rgba(139,0,0,0.88)', color: '#fff' }
+      : { bg: 'rgba(22,101,52,0.88)', color: '#fff' }
 
-  /* ──────────────────────────────────────
-     MOBILE — horizontal card
-  ────────────────────────────────────── */
+  const badgeLabel = isRes ? 'Resolved' : isLost ? 'Lost' : 'Found'
+
+  /* ── Image section: cover fills the box cleanly, no background color ── */
+  const ImageBox = ({ width, height, borderRadius }) => (
+    <div style={{
+      width, height,
+      flexShrink: 0,
+      borderRadius,
+      overflow: 'hidden',
+      position: 'relative',
+      /* Only use cat.bg when there's no image — never a dark bg */
+      background: post.image_url ? 'transparent' : cat.bg,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      {post.image_url ? (
+        <img
+          src={post.image_url}
+          alt={post.title}
+          style={{
+            width: '100%', height: '100%',
+            objectFit: 'cover',      /* fills box cleanly, no letterbox */
+            objectPosition: 'center',
+            display: 'block',
+          }}
+        />
+      ) : (
+        cat.placeholder(cat.color)
+      )}
+
+      {/* Status badge absolute overlay */}
+      <span style={{
+        position: 'absolute', top: 8, left: 8,
+        background: badgeStyle.bg, color: badgeStyle.color,
+        fontSize: 10, fontWeight: 700,
+        padding: '3px 8px', borderRadius: 99,
+        backdropFilter: 'blur(6px)',
+        display: 'flex', alignItems: 'center', gap: 4,
+        boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
+        lineHeight: 1.4,
+      }}>
+        <span style={{ width: 5, height: 5, borderRadius: '50%', background: isRes ? '#94A3B8' : '#fff', flexShrink: 0 }} />
+        {badgeLabel}
+      </span>
+    </div>
+  )
+
+  /* ══════════════════════════════════════
+     MOBILE — vertical card (image top, text below)
+  ══════════════════════════════════════ */
   if (isMobile) return (
     <Link to={`/post/${post.id}`} style={{
-      display: 'flex',
-      background: '#fff',
-      borderRadius: 14,
-      overflow: 'hidden',
-      textDecoration: 'none',
+      display: 'flex', flexDirection: 'column',
+      background: '#fff', borderRadius: 14,
+      overflow: 'hidden', textDecoration: 'none',
       border: '1px solid #F1F5F9',
-      boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
       transition: 'box-shadow 0.15s',
     }}
-      onTouchStart={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.10)'}
-      onTouchEnd={e => e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.05)'}
+      onTouchStart={e => e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.12)'}
+      onTouchEnd={e => e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'}
     >
-      {/* Left — image or category icon */}
-      <div style={{ width: 86, height: 86, flexShrink: 0, background: cat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-        {post.image_url
-          ? <img src={post.image_url} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          : cat.card(cat.color)}
-      </div>
+      {/* Image top */}
+      <ImageBox width="100%" height={160} borderRadius="14px 14px 0 0" />
 
-      {/* Right — details */}
-      <div style={{ flex: 1, padding: '11px 13px', minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 3 }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+      {/* Text below */}
+      <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: '#0F172A', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {post.title}
-        </span>
-        <span style={{ fontSize: 11, color: '#94A3B8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 2 }}>
-          <PinIcon />
-          {post.location} · {new Date(post.date_lost_found).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })} · {post.users?.full_name || 'Unknown'}
-        </span>
-        <span style={{ display: 'inline-flex', alignSelf: 'flex-start', padding: '2px 9px', borderRadius: 99, fontSize: 10, fontWeight: 700, background: badge.bg, color: badge.color }}>
-          {badge.label}
-        </span>
+        </h3>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <span style={{ fontSize: 11, color: '#64748B', display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <PinIcon /> {post.location}
+          </span>
+          <span style={{ fontSize: 11, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <CalIcon /> {new Date(post.date_lost_found).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 2 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: DARK_RED, fontWeight: 600 }}>
+            <UserIcon /> {post.users?.full_name || 'Unknown'}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: cat.color, background: cat.bg, padding: '2px 7px', borderRadius: 99, fontWeight: 600 }}>
+            {cat.chip(cat.color)} {post.category}
+          </span>
+        </div>
       </div>
     </Link>
   )
 
-  /* ──────────────────────────────────────
-     DESKTOP / TABLET — vertical card
-  ────────────────────────────────────── */
+  /* ══════════════════════════════════════
+     DESKTOP — horizontal card (image left, text right)
+  ══════════════════════════════════════ */
   return (
     <Link to={`/post/${post.id}`} style={{
-      display: 'flex', flexDirection: 'column',
-      background: '#fff', borderRadius: 16,
-      border: '1.5px solid #E5E9F0', textDecoration: 'none',
-      overflow: 'hidden',
-      boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
-      transition: 'transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease',
+      display: 'flex', flexDirection: 'row',
+      background: '#fff', borderRadius: 14,
+      overflow: 'hidden', textDecoration: 'none',
+      border: '1.5px solid #E5E9F0',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+      transition: 'transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease',
     }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = '#C41E3A'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(139,0,0,0.13)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = '#E5E9F0'; e.currentTarget.style.boxShadow = '0 1px 6px rgba(0,0,0,0.05)'; e.currentTarget.style.transform = 'translateY(0)' }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = '#C41E3A'
+        e.currentTarget.style.boxShadow = '0 6px 22px rgba(139,0,0,0.12)'
+        e.currentTarget.style.transform = 'translateY(-2px)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = '#E5E9F0'
+        e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.05)'
+        e.currentTarget.style.transform = 'translateY(0)'
+      }}
     >
-      {/* Image / placeholder */}
-      <div style={{ width: '100%', height: 200, position: 'relative', flexShrink: 0, overflow: 'hidden' }}>
-        {post.image_url
-          ? <img src={post.image_url} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          : <div style={{ width: '100%', height: '100%', background: cat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {cat.big(cat.color)}
-            </div>}
+      {/* Image left — fixed width, full card height */}
+      <ImageBox width={140} height="auto" borderRadius="0" />
 
-        {/* Status badge — top right */}
-        <span style={{ position: 'absolute', top: 10, right: 10, background: isRes ? '#F1F5F9' : isLost ? 'rgba(139,0,0,0.88)' : 'rgba(22,101,52,0.88)', color: isRes ? '#64748B' : '#fff', fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 99, backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 1px 6px rgba(0,0,0,0.15)' }}>
-          <span style={{ width: 5, height: 5, borderRadius: '50%', background: isRes ? '#94A3B8' : '#fff', flexShrink: 0 }} />
-          {badge.label}
-        </span>
+      {/* Text right */}
+      <div style={{ flex: 1, padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0, gap: 6 }}>
 
-        {/* Category chip — bottom left */}
-        <span style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(255,255,255,0.92)', color: cat.color, fontSize: 11, fontWeight: 600, padding: '4px 9px', borderRadius: 99, display: 'flex', alignItems: 'center', gap: 5, backdropFilter: 'blur(4px)' }}>
-          {cat.chip(cat.color)}
-          {post.category}
-        </span>
-      </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          {/* Title */}
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: '#0F172A', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {post.title}
+          </h3>
 
-      {/* Details */}
-      <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 5 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0F172A', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {post.title}
-        </h3>
-        <p style={{ fontSize: 12, color: '#64748B', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }}>
-          <PinIcon />
-          {post.location} · {new Date(post.date_lost_found).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
-        </p>
-        <p style={{ fontSize: 12, color: '#94A3B8', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {post.description}
-        </p>
-        <div style={{ marginTop: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: 12, color: DARK_RED, fontWeight: 600 }}>by {post.users?.full_name || 'Unknown'}</span>
-          <span style={{ fontSize: 11, color: '#94A3B8', background: '#F8FAFC', padding: '2px 8px', borderRadius: 99, border: '1px solid #E5E9F0' }}>View →</span>
+          {/* Description */}
+          <p style={{ fontSize: 12, color: '#64748B', margin: 0, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.5 }}>
+            {post.description}
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {/* Location + date */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#64748B' }}>
+              <PinIcon /> {post.location}
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#94A3B8' }}>
+              <CalIcon /> {new Date(post.date_lost_found).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </span>
+          </div>
+
+          {/* Bottom row: poster + category chip */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: DARK_RED, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <UserIcon /> {post.users?.full_name || 'Unknown'}
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: cat.color, background: cat.bg, padding: '3px 8px', borderRadius: 99, fontWeight: 600, flexShrink: 0 }}>
+              {cat.chip(cat.color)} {post.category}
+            </span>
+          </div>
         </div>
       </div>
     </Link>

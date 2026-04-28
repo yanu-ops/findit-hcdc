@@ -5,23 +5,67 @@ import LoadingSpinner from '../components/LoadingSpinner'
 
 const DARK_RED = '#8B0000'
 
-const CATEGORIES = [
-  { label: 'All',         emoji: '🗂️' },
-  { label: 'Electronics', emoji: '🎧' },
-  { label: 'Clothing',    emoji: '👕' },
-  { label: 'ID / Cards',  emoji: '🪪' },
-  { label: 'Bags',        emoji: '👜' },
-  { label: 'Books',       emoji: '📚' },
-  { label: 'Keys',        emoji: '🔑' },
-  { label: 'Wallet',      emoji: '👛' },
-  { label: 'Other',       emoji: '📦' },
-]
+/* ── Category SVG icons for filter chips (replaces emojis) ── */
+const CAT_ICONS = {
+  All: col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+  ),
+  Electronics: col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
+    </svg>
+  ),
+  Clothing: col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
+    </svg>
+  ),
+  'ID / Cards': col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
+    </svg>
+  ),
+  Bags: col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+  ),
+  Books: col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+  ),
+  Keys: col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
+    </svg>
+  ),
+  Wallet: col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
+    </svg>
+  ),
+  Other: col => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, flexShrink: 0 }}>
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+    </svg>
+  ),
+}
 
-/* Mobile tabs match the reference: All · Lost · Found · Resolved */
+const SearchIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, opacity: 0.5 }}>
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+  </svg>
+)
+
+const CATEGORIES = ['All','Electronics','Clothing','ID / Cards','Bags','Books','Keys','Wallet','Other']
+
 const MOBILE_TYPES = [
-  { key: 'all',      label: 'All'      },
-  { key: 'lost',     label: 'Lost'     },
-  { key: 'found',    label: 'Found'    },
+  { key: 'all',   label: 'All'   },
+  { key: 'lost',  label: 'Lost'  },
+  { key: 'found', label: 'Found' },
 ]
 
 const DESKTOP_TYPES = [
@@ -57,10 +101,8 @@ export default function Browse() {
       .select('*, users(full_name)')
       .order('created_at', { ascending: false })
       .eq('status', 'active')
-
     if (type !== 'all') q = q.eq('type', type)
     if (category !== 'All') q = q.eq('category', category)
-
     const { data } = await q
     setPosts(data || [])
     setLoading(false)
@@ -72,28 +114,50 @@ export default function Browse() {
     p.location.toLowerCase().includes(search.toLowerCase())
   )
 
-  /* ──────────────────────────────────────────
-     MOBILE layout
-  ────────────────────────────────────────── */
+  /* ── Shared empty state ── */
+  const EmptyState = () => (
+    <div style={{ textAlign: 'center', padding: '52px 0', color: '#94A3B8', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+      <SearchIcon />
+      <div style={{ fontSize: 15, fontWeight: 600, color: '#475569' }}>No items found</div>
+      <div style={{ fontSize: 13 }}>Try different filters or search terms</div>
+    </div>
+  )
+
+  /* ── Shared category chip ── */
+  const CatChip = ({ label }) => {
+    const active = category === label
+    const Icon   = CAT_ICONS[label]
+    const activeCol = DARK_RED
+    const col    = active ? activeCol : '#64748B'
+    return (
+      <button onClick={() => setCategory(label)} style={{
+        display: 'flex', alignItems: 'center', gap: 5,
+        padding: '6px 12px', borderRadius: 99, flexShrink: 0,
+        border: active ? `1.5px solid ${DARK_RED}` : '1.5px solid #E5E9F0',
+        background: active ? '#FDF2F2' : '#F8F9FB',
+        color: col, fontSize: 12, fontWeight: active ? 600 : 400,
+        cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+      }}>
+        {Icon && Icon(col)}
+        {label}
+      </button>
+    )
+  }
+
+  /* ════════════════════════════════════
+     MOBILE
+  ════════════════════════════════════ */
   if (isMobile) return (
     <div style={{ background: '#F8F9FB', minHeight: '100vh' }}>
 
-      {/* ── Type tabs (All / Lost / Found) — sticky under header ── */}
-      <div style={{
-        position: 'sticky', top: 56, zIndex: 100,
-        background: '#fff',
-        borderBottom: '1px solid #F1F5F9',
-        padding: '0 16px',
-        display: 'flex', gap: 0,
-      }}>
+      {/* Type tabs */}
+      <div style={{ position: 'sticky', top: 56, zIndex: 100, background: '#fff', borderBottom: '1px solid #F1F5F9', padding: '0 16px', display: 'flex', gap: 0 }}>
         {MOBILE_TYPES.map(t => {
           const active = type === t.key
           return (
             <button key={t.key} onClick={() => setType(t.key)} style={{
-              flex: 1, padding: '12px 0', border: 'none',
-              background: 'transparent',
-              color: active ? DARK_RED : '#94A3B8',
-              fontSize: 14, fontWeight: active ? 700 : 400,
+              flex: 1, padding: '12px 0', border: 'none', background: 'transparent',
+              color: active ? DARK_RED : '#94A3B8', fontSize: 14, fontWeight: active ? 700 : 400,
               cursor: 'pointer', fontFamily: 'inherit',
               borderBottom: active ? `2px solid ${DARK_RED}` : '2px solid transparent',
               transition: 'color 0.15s, border-color 0.15s',
@@ -104,71 +168,31 @@ export default function Browse() {
         })}
       </div>
 
-      {/* ── Search bar ── */}
+      {/* Search */}
       <div style={{ padding: '12px 16px 8px', background: '#fff' }}>
         <div style={{ position: 'relative' }}>
           <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', display: 'flex', pointerEvents: 'none' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
-              <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
           </span>
-          <input
-            type="text"
-            placeholder="Search items or location..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            style={{
-              width: '100%', padding: '10px 12px 10px 36px',
-              border: '1.5px solid #E5E9F0', borderRadius: 10,
-              fontSize: 13, outline: 'none', fontFamily: 'inherit',
-              boxSizing: 'border-box', color: '#0F172A', background: '#F8F9FB',
-              transition: 'border-color 0.15s',
-            }}
+          <input type="text" placeholder="Search items or location..." value={search} onChange={e => setSearch(e.target.value)}
+            style={{ width: '100%', padding: '10px 12px 10px 36px', border: '1.5px solid #E5E9F0', borderRadius: 10, fontSize: 13, outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box', color: '#0F172A', background: '#F8F9FB', transition: 'border-color 0.15s' }}
             onFocus={e => e.target.style.borderColor = DARK_RED}
             onBlur={e => e.target.style.borderColor = '#E5E9F0'}
           />
         </div>
       </div>
 
-      {/* ── Category chips ── */}
-      <div style={{
-        display: 'flex', gap: 7, padding: '4px 16px 10px',
-        overflowX: 'auto', background: '#fff',
-        /* hide scrollbar */
-        msOverflowStyle: 'none', scrollbarWidth: 'none',
-      }}>
-        {CATEGORIES.map(c => {
-          const active = category === c.label
-          return (
-            <button key={c.label} onClick={() => setCategory(c.label)} style={{
-              display: 'flex', alignItems: 'center', gap: 4,
-              padding: '6px 12px', borderRadius: 99, flexShrink: 0,
-              border: active ? `1.5px solid ${DARK_RED}` : '1.5px solid #E5E9F0',
-              background: active ? '#FDF2F2' : '#F8F9FB',
-              color: active ? DARK_RED : '#64748B',
-              fontSize: 12, fontWeight: active ? 600 : 400,
-              cursor: 'pointer', fontFamily: 'inherit',
-              transition: 'all 0.15s',
-            }}>
-              <span style={{ fontSize: 13 }}>{c.emoji}</span>
-              {c.label}
-            </button>
-          )
-        })}
+      {/* Category chips */}
+      <div style={{ display: 'flex', gap: 7, padding: '4px 16px 10px', overflowX: 'auto', background: '#fff', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+        {CATEGORIES.map(c => <CatChip key={c} label={c} />)}
       </div>
 
-      {/* ── Card list ── */}
-      <div style={{ padding: '0 12px 12px' }}>
-        {loading ? (
-          <LoadingSpinner />
-        ) : filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 0', color: '#94A3B8' }}>
-            <div style={{ fontSize: 40, marginBottom: 10 }}>🔍</div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#475569' }}>No items found</div>
-            <div style={{ fontSize: 13, marginTop: 4 }}>Try different filters</div>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* 2-column grid on mobile */}
+      <div style={{ padding: '0 10px 10px' }}>
+        {loading ? <LoadingSpinner /> : filtered.length === 0 ? <EmptyState /> : (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {filtered.map(post => <PostCard key={post.id} post={post} />)}
           </div>
         )}
@@ -176,26 +200,21 @@ export default function Browse() {
     </div>
   )
 
-  /* ──────────────────────────────────────────
-     DESKTOP / TABLET layout
-  ────────────────────────────────────────── */
+  /* ════════════════════════════════════
+     DESKTOP / TABLET
+  ════════════════════════════════════ */
   return (
     <div>
-      {/* Page title */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 700, color: '#0F172A', margin: 0 }}>
-          Lost &amp; Found Board
-        </h1>
-        <p style={{ color: '#64748B', fontSize: 14, marginTop: 4 }}>
-          Browse and message to recover items on campus.
-        </p>
+        <h1 style={{ fontSize: 26, fontWeight: 700, color: '#0F172A', margin: 0 }}>Lost &amp; Found Board</h1>
+        <p style={{ color: '#64748B', fontSize: 14, marginTop: 4 }}>Browse and message to recover items on campus.</p>
       </div>
 
       {/* Search */}
       <div style={{ position: 'relative', marginBottom: 20 }}>
         <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', pointerEvents: 'none', display: 'flex' }}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 18, height: 18 }}>
-            <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
         </span>
         <input type="text" placeholder="Search items, locations, descriptions..."
@@ -211,7 +230,15 @@ export default function Browse() {
         {DESKTOP_TYPES.map(t => {
           const active = type === t.key
           return (
-            <button key={t.key} onClick={() => setType(t.key)} style={{ padding: '8px 20px', borderRadius: 99, border: active ? 'none' : '1.5px solid #E5E9F0', background: active ? DARK_RED : '#fff', color: active ? '#fff' : '#475569', fontSize: 13, fontWeight: active ? 600 : 400, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s', boxShadow: active ? '0 2px 8px rgba(139,0,0,0.25)' : 'none' }}>
+            <button key={t.key} onClick={() => setType(t.key)} style={{
+              padding: '8px 20px', borderRadius: 99,
+              border: active ? 'none' : '1.5px solid #E5E9F0',
+              background: active ? DARK_RED : '#fff',
+              color: active ? '#fff' : '#475569',
+              fontSize: 13, fontWeight: active ? 600 : 400,
+              cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
+              boxShadow: active ? '0 2px 8px rgba(139,0,0,0.25)' : 'none',
+            }}>
               {t.label}
             </button>
           )
@@ -219,16 +246,8 @@ export default function Browse() {
       </div>
 
       {/* Category chips */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 28, overflowX: 'auto', paddingBottom: 4 }}>
-        {CATEGORIES.map(c => {
-          const active = category === c.label
-          return (
-            <button key={c.label} onClick={() => setCategory(c.label)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 99, border: active ? 'none' : '1.5px solid #E5E9F0', background: active ? '#FDF2F2' : '#fff', color: active ? DARK_RED : '#475569', fontSize: 13, fontWeight: active ? 600 : 400, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s', whiteSpace: 'nowrap', flexShrink: 0, boxShadow: active ? `0 0 0 1.5px ${DARK_RED} inset` : 'none' }}>
-              <span style={{ fontSize: 15 }}>{c.emoji}</span>
-              <span>{c.label}</span>
-            </button>
-          )
-        })}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24, overflowX: 'auto', paddingBottom: 4 }}>
+        {CATEGORIES.map(c => <CatChip key={c} label={c} />)}
       </div>
 
       {/* Count */}
@@ -238,17 +257,9 @@ export default function Browse() {
         </div>
       )}
 
-      {/* Grid */}
-      {loading ? (
-        <LoadingSpinner />
-      ) : filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '64px 0', color: '#94A3B8' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#475569' }}>No items found</div>
-          <div style={{ fontSize: 14, marginTop: 4 }}>Try different filters or search terms</div>
-        </div>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18 }}>
+      {/* 2-column grid — horizontal cards (image left, text right) */}
+      {loading ? <LoadingSpinner /> : filtered.length === 0 ? <EmptyState /> : (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
           {filtered.map(post => <PostCard key={post.id} post={post} />)}
         </div>
       )}

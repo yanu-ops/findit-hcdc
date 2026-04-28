@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import useStore from '../store/useStore'
 
-/* ── Constants ──────────────────────────────────────────── */
 const DR      = '#8B0000'
 const W       = '#FFFFFF'
 const W70     = 'rgba(255,255,255,0.70)'
@@ -17,7 +16,6 @@ const EASE    = 'cubic-bezier(0.4,0,0.2,1)'
 const DUR     = '0.28s'
 const TR      = `${DUR} ${EASE}`
 
-/* ── Breakpoint hook ────────────────────────────────────── */
 function useBreakpoint() {
   const get = () => window.innerWidth < 640 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
   const [bp, setBp] = useState(get)
@@ -26,11 +24,9 @@ function useBreakpoint() {
     window.addEventListener('resize', fn)
     return () => window.removeEventListener('resize', fn)
   }, [])
-  return bp   // 'mobile' | 'tablet' | 'desktop'
+  return bp
 }
 
-/* ── Nav link definitions ───────────────────────────────── */
-// Sidebar: 5 items
 const SB = [
   {
     to: '/', label: 'Browse',
@@ -54,7 +50,6 @@ const SB = [
   },
 ]
 
-// Bottom nav: 4 items (Post Item becomes FAB in layout)
 const BN = [
   {
     to: '/', label: 'Browse',
@@ -74,9 +69,6 @@ const BN = [
   },
 ]
 
-/* ══════════════════════════════════════════════════════════
-   MAIN COMPONENT
-══════════════════════════════════════════════════════════ */
 export default function Navbar() {
   const bp       = useBreakpoint()
   const isMobile = bp === 'mobile'
@@ -84,7 +76,6 @@ export default function Navbar() {
   const navigate = useNavigate()
   const { unreadCount, profile, notifCount, setNotifCount, setUnreadCount } = useStore()
 
-  /* Sidebar collapse (desktop + tablet) */
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem('sb-collapsed') === 'true' } catch { return false }
   })
@@ -94,12 +85,10 @@ export default function Navbar() {
     window.dispatchEvent(new CustomEvent('sb-toggle', { detail: isMobile ? 'mobile' : collapsed }))
   }, [collapsed, isMobile])
 
-  /* Notify Layout whenever breakpoint changes */
   useEffect(() => {
     window.dispatchEvent(new CustomEvent('sb-toggle', { detail: isMobile ? 'mobile' : collapsed }))
   }, [isMobile])
 
-  /* Notifications */
   const [showNotif, setShowNotif]         = useState(false)
   const [notifications, setNotifications] = useState([])
   const notifRef                          = useRef(null)
@@ -109,7 +98,10 @@ export default function Navbar() {
     fetchNotifs()
     const ch = supabase
       .channel(`notif-${profile.id}`)
+      // New message → show in notif list
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `receiver_id=eq.${profile.id}` }, fetchNotifs)
+      // Message marked read (from Inbox or Chat) → re-fetch so badge clears immediately
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages', filter: `receiver_id=eq.${profile.id}` }, fetchNotifs)
       .subscribe()
     return () => supabase.removeChannel(ch)
   }, [profile?.id])
@@ -158,7 +150,6 @@ export default function Navbar() {
   const avatarUrl = profile?.avatar_url
   const initials  = profile?.full_name?.charAt(0).toUpperCase() || '?'
 
-  /* ── Shared notification dropdown ── */
   const NotifDropdown = () => !showNotif ? null : (
     <div style={{
       position: 'absolute', top: isMobile ? 48 : 52, right: 0,
@@ -204,12 +195,9 @@ export default function Navbar() {
     </div>
   )
 
-  /* ════════════════════════════════════════════
-     MOBILE  ─  top header  +  bottom nav
-  ════════════════════════════════════════════ */
+  /* ── MOBILE ── */
   if (isMobile) return (
     <>
-      {/* ── Top header ── */}
       <header style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 56,
         background: '#fff',
@@ -217,7 +205,6 @@ export default function Navbar() {
         padding: '0 16px', zIndex: 300,
         boxShadow: '0 1px 0 #F1F5F9, 0 2px 8px rgba(0,0,0,0.05)',
       }}>
-        {/* Brand */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 30, height: 30, borderRadius: 8, background: DR, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <span style={{ color: '#fff', fontSize: 7, fontWeight: 800, lineHeight: 1.2, textAlign: 'center' }}>HC<br />DC</span>
@@ -228,7 +215,6 @@ export default function Navbar() {
           </span>
         </div>
 
-        {/* Notification bell */}
         <div ref={notifRef} style={{ position: 'relative' }}>
           <button onClick={() => setShowNotif(v => !v)} style={{
             width: 38, height: 38, borderRadius: '50%', background: 'transparent', border: 'none',
@@ -248,14 +234,12 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* ── Bottom navigation bar ── */}
       <nav style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,
         height: 64,
         background: DR,
         display: 'flex', alignItems: 'stretch',
         zIndex: 300,
-        /* iOS safe area */
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         boxShadow: '0 -2px 16px rgba(139,0,0,0.22)',
       }}>
@@ -272,7 +256,6 @@ export default function Navbar() {
               transition: 'color 0.15s',
               WebkitTapHighlightColor: 'transparent',
             }}>
-              {/* Active top stripe */}
               {active && (
                 <div style={{
                   position: 'absolute', top: 0, left: '50%',
@@ -282,8 +265,6 @@ export default function Navbar() {
                   borderRadius: '0 0 4px 4px',
                 }} />
               )}
-
-              {/* Icon + badge */}
               <span style={{ position: 'relative' }}>
                 {link.icon(col)}
                 {link.badge && unreadCount > 0 && (
@@ -299,8 +280,6 @@ export default function Navbar() {
                   </span>
                 )}
               </span>
-
-              {/* Label */}
               <span style={{ fontSize: 10, fontWeight: active ? 700 : 400, letterSpacing: '0.01em' }}>
                 {link.label}
               </span>
@@ -315,11 +294,7 @@ export default function Navbar() {
     </>
   )
 
-  /* ════════════════════════════════════════════
-     DESKTOP / TABLET  ─  collapsible sidebar
-  ════════════════════════════════════════════ */
-
-  /* Animated label span */
+  /* ── DESKTOP / TABLET ── */
   const Label = ({ children }) => (
     <span style={{
       overflow: 'hidden', whiteSpace: 'nowrap', display: 'inline-block',
@@ -331,7 +306,6 @@ export default function Navbar() {
     </span>
   )
 
-  /* Per-link style */
   const ls = active => ({
     display: 'flex', alignItems: 'center',
     gap: collapsed ? 0 : 12,
@@ -358,7 +332,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ══ Sidebar ══ */}
       <aside style={{
         position: 'fixed', top: 0, left: 0, height: '100vh',
         width: collapsed ? NARROW : WIDE,
@@ -418,7 +391,6 @@ export default function Navbar() {
               >
                 <span style={{ position: 'relative', flexShrink: 0 }}>
                   {link.icon}
-                  {/* Badge dot on icon when collapsed */}
                   {link.badge && unreadCount > 0 && collapsed && (
                     <span style={{ position: 'absolute', top: -4, right: -4, background: '#2563EB', color: W, fontSize: 9, fontWeight: 700, borderRadius: 99, minWidth: 15, height: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 2px' }}>
                       {unreadCount > 9 ? '9+' : unreadCount}
@@ -426,7 +398,6 @@ export default function Navbar() {
                   )}
                 </span>
                 <Label>{link.label}</Label>
-                {/* Badge pill when expanded */}
                 {!collapsed && link.badge && unreadCount > 0 && (
                   <span style={{ background: active ? '#2563EB' : W25, color: W, fontSize: 10, fontWeight: 700, borderRadius: 99, minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 5px', flexShrink: 0, marginLeft: 'auto' }}>
                     {unreadCount > 9 ? '9+' : unreadCount}
@@ -437,12 +408,10 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Divider */}
         <div style={{ height: 1, background: WB, margin: '0 12px', flexShrink: 0 }} />
 
         {/* User card + logout */}
         <div style={{ flexShrink: 0, padding: 10, display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {/* Expanded user card */}
           {!collapsed && profile && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 10, background: W15, marginBottom: 2, overflow: 'hidden' }}>
               <AvatarCircle size={32} fs={12} />
@@ -452,7 +421,6 @@ export default function Navbar() {
               </div>
             </div>
           )}
-          {/* Collapsed avatar */}
           {collapsed && profile && (
             <div title={profile.full_name} style={{ width: 38, height: 38, borderRadius: '50%', background: W25, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 4px', overflow: 'hidden', flexShrink: 0 }}>
               {avatarUrl
@@ -460,7 +428,6 @@ export default function Navbar() {
                 : <span style={{ color: W, fontWeight: 700, fontSize: 14 }}>{initials}</span>}
             </div>
           )}
-          {/* Logout */}
           <button onClick={async () => { await supabase.auth.signOut(); navigate('/login') }} title={collapsed ? 'Log out' : ''} style={ls(false)}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.color = W }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = W70 }}
@@ -473,7 +440,7 @@ export default function Navbar() {
         </div>
       </aside>
 
-      {/* ── Floating notification bell (desktop/tablet) ── */}
+      {/* Floating notification bell (desktop/tablet) */}
       <div ref={notifRef} style={{ position: 'fixed', top: 16, right: 20, zIndex: 200 }}>
         <button onClick={() => setShowNotif(v => !v)} style={{
           width: 42, height: 42, borderRadius: '50%',

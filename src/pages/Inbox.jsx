@@ -31,7 +31,7 @@ function buildThreads(messages, userId) {
 }
 
 export default function Inbox() {
-  const { user, setUnreadCount, setThreads, onlineUsers } = useStore()
+  const { user, setUnreadCount, setNotifCount, setThreads, onlineUsers } = useStore()
   const navigate = useNavigate()
   const [threads, setLocalThreads] = useState([])
   const [loading, setLoading]      = useState(true)
@@ -70,7 +70,6 @@ export default function Inbox() {
         if (msg.sender_id === user.id || msg.receiver_id === user.id) fetchThreads()
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, () => {
-        // Re-fetch so avatars in thread list stay in sync
         fetchThreads()
       })
       .subscribe()
@@ -80,13 +79,17 @@ export default function Inbox() {
 
   async function handleThreadClick(thread) {
     if (thread.unreadCount > 0) {
-      setLocalThreads(prev =>
-        prev.map(t => t.key === thread.key ? { ...t, unreadCount: 0 } : t)
-      )
-      const newTotal = threads.reduce((acc, t) =>
-        t.key === thread.key ? acc : acc + t.unreadCount, 0
-      )
-      setUnreadCount(newTotal)
+      // Optimistically clear dot — compute new total from the freshly-updated list
+      // to avoid stale closure issues with the outer `threads` variable
+      setLocalThreads(prev => {
+        const next = prev.map(t => t.key === thread.key ? { ...t, unreadCount: 0 } : t)
+        const newTotal = next.reduce((acc, t) => acc + t.unreadCount, 0)
+        setUnreadCount(newTotal)
+        setNotifCount(newTotal)
+        return next
+      })
+
+      // Persist to DB — Navbar's UPDATE listener will re-fetch and confirm
       await supabase
         .from('messages')
         .update({ is_read: true })
@@ -149,7 +152,6 @@ export default function Inbox() {
                       ? <img src={avatarUrl} alt={thread.otherUser.full_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       : initial}
                   </div>
-                  {/* Online / offline dot */}
                   <span style={{
                     position: 'absolute', bottom: 1, right: 1,
                     width: 12, height: 12, borderRadius: '50%',
