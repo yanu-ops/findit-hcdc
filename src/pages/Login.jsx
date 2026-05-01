@@ -4,6 +4,23 @@ import { supabase } from '../lib/supabase'
 
 const DR = '#8B0000'
 
+/* ── Shared logo SVG ── */
+function LogoIcon({ size = 36 }) {
+  return (
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width={size} height={size} style={{ flexShrink: 0 }}>
+      <circle cx="42" cy="42" r="34" fill="#1E2A5E" />
+      <circle cx="42" cy="42" r="26" fill="white" />
+      <circle cx="42" cy="42" r="18" fill="none" stroke="#60A5FA" strokeWidth="2.5" />
+      <line x1="24" y1="42" x2="60" y2="42" stroke="#60A5FA" strokeWidth="2" />
+      <line x1="25.5" y1="33" x2="58.5" y2="33" stroke="#60A5FA" strokeWidth="1.8" />
+      <line x1="25.5" y1="51" x2="58.5" y2="51" stroke="#60A5FA" strokeWidth="1.8" />
+      <line x1="42" y1="24" x2="42" y2="60" stroke="#60A5FA" strokeWidth="2" />
+      <ellipse cx="42" cy="42" rx="9" ry="18" fill="none" stroke="#60A5FA" strokeWidth="2" />
+      <line x1="63" y1="63" x2="80" y2="80" stroke="#1E2A5E" strokeWidth="11" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function useIsMobile() {
   const [v, setV] = useState(() => window.innerWidth < 768)
   useEffect(() => {
@@ -14,13 +31,6 @@ function useIsMobile() {
   return v
 }
 
-/* ─────────────────────────────────────────────────────────────
-   FormCard is a TOP-LEVEL component (outside Login).
-   This is the critical fix — if it were defined as a const
-   inside Login, React would treat it as a new component type
-   on every keystroke re-render, unmount+remount it, and the
-   focused input would be destroyed each time.
-───────────────────────────────────────────────────────────── */
 function FormCard({ isMobile, form, setForm, showPass, setShowPass, error, loading, onSubmit }) {
   const fieldBase = {
     width: '100%',
@@ -44,9 +54,7 @@ function FormCard({ isMobile, form, setForm, showPass, setShowPass, error, loadi
       {/* Logo — mobile only */}
       {isMobile && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: DR, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ color: '#fff', fontSize: 9, fontWeight: 800, lineHeight: 1.3, textAlign: 'center' }}>HC<br />DC</span>
-          </div>
+          <LogoIcon size={36} />
           <span style={{ fontWeight: 800, fontSize: 20, letterSpacing: '-0.4px' }}>
             <span style={{ color: DR }}>FindIt</span>
             <span style={{ color: '#0F172A' }}>@HCDC</span>
@@ -114,7 +122,8 @@ function FormCard({ isMobile, form, setForm, showPass, setShowPass, error, loadi
               style={{ ...fieldBase, paddingRight: 44, opacity: loading ? 0.7 : 1 }}
               onFocus={onFocus} onBlur={onBlur}
             />
-            <button type="button" onClick={() => setShowPass(s => !s)} style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: 0, display: 'flex' }}>
+            <button type="button" onClick={() => setShowPass(s => !s)}
+              style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: 0, display: 'flex' }}>
               {showPass
                 ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" /><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" /><line x1="1" y1="1" x2="23" y2="23" /></svg>
                 : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 17, height: 17 }}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
@@ -134,7 +143,8 @@ function FormCard({ isMobile, form, setForm, showPass, setShowPass, error, loadi
             />
             Remember me
           </label>
-          <button type="button" style={{ background: 'none', border: 'none', color: '#64748B', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}
+          <button type="button"
+            style={{ background: 'none', border: 'none', color: '#64748B', fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}
             onMouseEnter={e => { e.currentTarget.style.color = DR }}
             onMouseLeave={e => { e.currentTarget.style.color = '#64748B' }}
           >
@@ -143,7 +153,8 @@ function FormCard({ isMobile, form, setForm, showPass, setShowPass, error, loadi
         </div>
 
         {/* Submit */}
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', background: loading ? '#A01830' : DR, color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, letterSpacing: '0.04em', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
+        <button type="submit" disabled={loading}
+          style={{ width: '100%', padding: '14px', background: loading ? '#A01830' : DR, color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, letterSpacing: '0.04em', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
           onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#6B0000' }}
           onMouseLeave={e => { if (!loading) e.currentTarget.style.background = DR }}
         >
@@ -162,7 +173,6 @@ function FormCard({ isMobile, form, setForm, showPass, setShowPass, error, loadi
   )
 }
 
-/* ── Main page component ── */
 export default function Login() {
   const navigate  = useNavigate()
   const isMobile  = useIsMobile()
@@ -219,10 +229,10 @@ export default function Login() {
 
         {/* Left illustration panel */}
         <div style={{ flex: 1.2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px 40px', position: 'relative', minHeight: '100vh' }}>
+
+          {/* Top-left logo */}
           <div style={{ position: 'absolute', top: 28, left: 36, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: DR, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: '#fff', fontWeight: 800, fontSize: 8, lineHeight: 1.3, textAlign: 'center' }}>HC<br />DC</span>
-            </div>
+            <LogoIcon size={38} />
             <span style={{ fontWeight: 800, fontSize: 22, color: DR, letterSpacing: '-0.5px' }}>
               FindIt<span style={{ color: '#0F172A' }}>@HCDC</span>
             </span>

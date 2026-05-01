@@ -5,6 +5,23 @@ import Alert from '../components/Alert'
 
 const DR = '#8B0000'
 
+/* ── Shared logo SVG ── */
+function LogoIcon({ size = 36 }) {
+  return (
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width={size} height={size} style={{ flexShrink: 0 }}>
+      <circle cx="42" cy="42" r="34" fill="#1E2A5E" />
+      <circle cx="42" cy="42" r="26" fill="white" />
+      <circle cx="42" cy="42" r="18" fill="none" stroke="#60A5FA" strokeWidth="2.5" />
+      <line x1="24" y1="42" x2="60" y2="42" stroke="#60A5FA" strokeWidth="2" />
+      <line x1="25.5" y1="33" x2="58.5" y2="33" stroke="#60A5FA" strokeWidth="1.8" />
+      <line x1="25.5" y1="51" x2="58.5" y2="51" stroke="#60A5FA" strokeWidth="1.8" />
+      <line x1="42" y1="24" x2="42" y2="60" stroke="#60A5FA" strokeWidth="2" />
+      <ellipse cx="42" cy="42" rx="9" ry="18" fill="none" stroke="#60A5FA" strokeWidth="2" />
+      <line x1="63" y1="63" x2="80" y2="80" stroke="#1E2A5E" strokeWidth="11" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function useIsMobile() {
   const [v, setV] = useState(() => window.innerWidth < 768)
   useEffect(() => {
@@ -33,12 +50,10 @@ function EyeOff() {
 }
 
 function FormCard({
-  isMobile,
-  form, setForm,
+  isMobile, form, setForm,
   showPass, setShowPass,
   showConfirm, setShowConfirm,
-  error, loading,
-  onSubmit,
+  error, loading, onSubmit,
 }) {
   const fieldBase = {
     width: '100%',
@@ -56,7 +71,6 @@ function FormCard({
   const onFocus = e => { e.target.style.boxShadow = `0 0 0 2.5px ${DR}` }
   const onBlur  = e => { e.target.style.boxShadow = 'none' }
 
-  /* Icon wrappers */
   const IconWrap = ({ children }) => (
     <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8', display: 'flex', pointerEvents: 'none' }}>
       {children}
@@ -69,9 +83,7 @@ function FormCard({
       {/* Logo — mobile only */}
       {isMobile && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: DR, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ color: '#fff', fontSize: 9, fontWeight: 800, lineHeight: 1.3, textAlign: 'center' }}>HC<br />DC</span>
-          </div>
+          <LogoIcon size={36} />
           <span style={{ fontWeight: 800, fontSize: 20, letterSpacing: '-0.4px' }}>
             <span style={{ color: DR }}>FindIt</span>
             <span style={{ color: '#0F172A' }}>@HCDC</span>
@@ -109,13 +121,10 @@ function FormCard({
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
               </svg>
             </IconWrap>
-            <input
-              type="text" required
-              value={form.full_name}
+            <input type="text" required value={form.full_name}
               onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))}
               placeholder="e.g. Juan dela Cruz"
-              style={fieldBase}
-              onFocus={onFocus} onBlur={onBlur}
+              style={fieldBase} onFocus={onFocus} onBlur={onBlur}
             />
           </div>
         </div>
@@ -131,13 +140,10 @@ function FormCard({
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
               </svg>
             </IconWrap>
-            <input
-              type="email" required
-              value={form.email}
+            <input type="email" required value={form.email}
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
               placeholder="you@hcdc.edu.ph"
-              style={fieldBase}
-              onFocus={onFocus} onBlur={onBlur}
+              style={fieldBase} onFocus={onFocus} onBlur={onBlur}
             />
           </div>
           <p style={{ fontSize: 11, color: '#94A3B8', margin: '5px 0 0' }}>Only @hcdc.edu.ph email addresses are allowed.</p>
@@ -154,18 +160,14 @@ function FormCard({
                 <rect x="2" y="5" width="20" height="14" rx="2" /><circle cx="8" cy="12" r="2" /><path d="M13 11h4M13 15h3" />
               </svg>
             </IconWrap>
-            <input
-              type="text" required
-              value={form.student_id}
+            <input type="text" required value={form.student_id}
               onChange={e => {
                 const val = e.target.value.replace(/\D/g, '').slice(0, 8)
                 setForm(f => ({ ...f, student_id: val }))
               }}
               placeholder="8-digit ID number"
-              maxLength={8}
-              inputMode="numeric"
-              style={fieldBase}
-              onFocus={onFocus} onBlur={onBlur}
+              maxLength={8} inputMode="numeric"
+              style={fieldBase} onFocus={onFocus} onBlur={onBlur}
             />
           </div>
           <p style={{ fontSize: 11, color: '#94A3B8', margin: '5px 0 0' }}>
@@ -184,9 +186,7 @@ function FormCard({
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </IconWrap>
-            <input
-              type={showPass ? 'text' : 'password'} required
-              value={form.password}
+            <input type={showPass ? 'text' : 'password'} required value={form.password}
               onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
               placeholder="At least 6 characters"
               style={{ ...fieldBase, paddingRight: 44 }}
@@ -210,9 +210,7 @@ function FormCard({
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </IconWrap>
-            <input
-              type={showConfirm ? 'text' : 'password'} required
-              value={form.confirm}
+            <input type={showConfirm ? 'text' : 'password'} required value={form.confirm}
               onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
               placeholder="Repeat your password"
               style={{ ...fieldBase, paddingRight: 44 }}
@@ -227,9 +225,7 @@ function FormCard({
 
         {/* Terms */}
         <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', fontSize: 13, color: '#374151', lineHeight: 1.6, marginTop: 2 }}>
-          <input
-            type="checkbox"
-            checked={form.agree}
+          <input type="checkbox" checked={form.agree}
             onChange={e => setForm(f => ({ ...f, agree: e.target.checked }))}
             style={{ accentColor: DR, width: 15, height: 15, marginTop: 2, flexShrink: 0 }}
           />
@@ -243,8 +239,7 @@ function FormCard({
         </label>
 
         {/* Submit */}
-        <button
-          type="submit" disabled={loading}
+        <button type="submit" disabled={loading}
           style={{ width: '100%', padding: '14px', background: loading ? '#A01830' : DR, color: '#fff', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, letterSpacing: '0.04em', cursor: loading ? 'not-allowed' : 'pointer', fontFamily: 'inherit', transition: 'background 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 4 }}
           onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#6B0000' }}
           onMouseLeave={e => { if (!loading) e.currentTarget.style.background = DR }}
@@ -264,7 +259,6 @@ function FormCard({
   )
 }
 
-/* ── Main page ── */
 export default function Register() {
   const isMobile = useIsMobile()
   const [form, setForm]               = useState({ full_name: '', email: '', student_id: '', password: '', confirm: '', agree: false })
@@ -278,7 +272,6 @@ export default function Register() {
     e.preventDefault()
     setError('')
 
-    // Validations
     if (!form.agree)
       return setError('You must agree to the Terms of Use to continue.')
     if (!form.email.toLowerCase().endsWith('@hcdc.edu.ph'))
@@ -353,10 +346,10 @@ export default function Register() {
 
         {/* Left illustration */}
         <div style={{ flex: 1.1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px 40px', position: 'relative', minHeight: '100vh' }}>
+
+          {/* Top-left logo */}
           <div style={{ position: 'absolute', top: 28, left: 36, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: DR, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: '#fff', fontWeight: 800, fontSize: 8, lineHeight: 1.3, textAlign: 'center' }}>HC<br />DC</span>
-            </div>
+            <LogoIcon size={38} />
             <span style={{ fontWeight: 800, fontSize: 22, color: DR, letterSpacing: '-0.5px' }}>
               FindIt<span style={{ color: '#0F172A' }}>@HCDC</span>
             </span>

@@ -3,6 +3,24 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import useStore from '../store/useStore'
 
+/* ── Logo SVG component ─────────────────────────────────── */
+function LogoIcon({ size = 36 }) {
+  return (
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width={size} height={size} style={{ flexShrink: 0 }}>
+      <circle cx="42" cy="42" r="34" fill="#1E2A5E" />
+      <circle cx="42" cy="42" r="26" fill="white" />
+      <circle cx="42" cy="42" r="18" fill="none" stroke="#60A5FA" strokeWidth="2.5" />
+      <line x1="24" y1="42" x2="60" y2="42" stroke="#60A5FA" strokeWidth="2" />
+      <line x1="25.5" y1="33" x2="58.5" y2="33" stroke="#60A5FA" strokeWidth="1.8" />
+      <line x1="25.5" y1="51" x2="58.5" y2="51" stroke="#60A5FA" strokeWidth="1.8" />
+      <line x1="42" y1="24" x2="42" y2="60" stroke="#60A5FA" strokeWidth="2" />
+      <ellipse cx="42" cy="42" rx="9" ry="18" fill="none" stroke="#60A5FA" strokeWidth="2" />
+      <line x1="63" y1="63" x2="80" y2="80" stroke="#1E2A5E" strokeWidth="11" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+/* ── Constants ──────────────────────────────────────────── */
 const DR      = '#8B0000'
 const W       = '#FFFFFF'
 const W70     = 'rgba(255,255,255,0.70)'
@@ -16,6 +34,7 @@ const EASE    = 'cubic-bezier(0.4,0,0.2,1)'
 const DUR     = '0.28s'
 const TR      = `${DUR} ${EASE}`
 
+/* ── Breakpoint hook ────────────────────────────────────── */
 function useBreakpoint() {
   const get = () => window.innerWidth < 640 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop'
   const [bp, setBp] = useState(get)
@@ -27,6 +46,7 @@ function useBreakpoint() {
   return bp
 }
 
+/* ── Nav link definitions ───────────────────────────────── */
 const SB = [
   {
     to: '/', label: 'Browse',
@@ -69,6 +89,9 @@ const BN = [
   },
 ]
 
+/* ══════════════════════════════════════════════════════════
+   MAIN COMPONENT
+══════════════════════════════════════════════════════════ */
 export default function Navbar() {
   const bp       = useBreakpoint()
   const isMobile = bp === 'mobile'
@@ -76,6 +99,7 @@ export default function Navbar() {
   const navigate = useNavigate()
   const { unreadCount, profile, notifCount, setNotifCount, setUnreadCount } = useStore()
 
+  /* Sidebar collapse (desktop + tablet) */
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem('sb-collapsed') === 'true' } catch { return false }
   })
@@ -89,6 +113,7 @@ export default function Navbar() {
     window.dispatchEvent(new CustomEvent('sb-toggle', { detail: isMobile ? 'mobile' : collapsed }))
   }, [isMobile])
 
+  /* Notifications */
   const [showNotif, setShowNotif]         = useState(false)
   const [notifications, setNotifications] = useState([])
   const notifRef                          = useRef(null)
@@ -98,9 +123,7 @@ export default function Navbar() {
     fetchNotifs()
     const ch = supabase
       .channel(`notif-${profile.id}`)
-      // New message → show in notif list
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `receiver_id=eq.${profile.id}` }, fetchNotifs)
-      // Message marked read (from Inbox or Chat) → re-fetch so badge clears immediately
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages', filter: `receiver_id=eq.${profile.id}` }, fetchNotifs)
       .subscribe()
     return () => supabase.removeChannel(ch)
@@ -150,6 +173,7 @@ export default function Navbar() {
   const avatarUrl = profile?.avatar_url
   const initials  = profile?.full_name?.charAt(0).toUpperCase() || '?'
 
+  /* ── Shared notification dropdown ── */
   const NotifDropdown = () => !showNotif ? null : (
     <div style={{
       position: 'absolute', top: isMobile ? 48 : 52, right: 0,
@@ -171,7 +195,10 @@ export default function Navbar() {
       <div style={{ maxHeight: 320, overflowY: 'auto' }}>
         {notifications.length === 0
           ? <div style={{ padding: '32px 16px', textAlign: 'center', color: '#94A3B8', fontSize: 13 }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>🔔</div>No new notifications
+              <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32, marginBottom: 8, display: 'block', margin: '0 auto 8px' }}>
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              No new notifications
             </div>
           : notifications.map(n => (
             <div key={n.id} onClick={() => handleNotifClick(n)}
@@ -195,9 +222,12 @@ export default function Navbar() {
     </div>
   )
 
-  /* ── MOBILE ── */
+  /* ════════════════════════════════════════════
+     MOBILE  ─  top header  +  bottom nav
+  ════════════════════════════════════════════ */
   if (isMobile) return (
     <>
+      {/* ── Top header ── */}
       <header style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 56,
         background: '#fff',
@@ -205,16 +235,16 @@ export default function Navbar() {
         padding: '0 16px', zIndex: 300,
         boxShadow: '0 1px 0 #F1F5F9, 0 2px 8px rgba(0,0,0,0.05)',
       }}>
+        {/* Brand with logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 30, height: 30, borderRadius: 8, background: DR, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ color: '#fff', fontSize: 7, fontWeight: 800, lineHeight: 1.2, textAlign: 'center' }}>HC<br />DC</span>
-          </div>
+          <LogoIcon size={30} />
           <span style={{ fontWeight: 800, fontSize: 17, letterSpacing: '-0.3px' }}>
             <span style={{ color: DR }}>FindIt </span>
             <span style={{ color: '#0F172A' }}>@ HCDC</span>
           </span>
         </div>
 
+        {/* Notification bell */}
         <div ref={notifRef} style={{ position: 'relative' }}>
           <button onClick={() => setShowNotif(v => !v)} style={{
             width: 38, height: 38, borderRadius: '50%', background: 'transparent', border: 'none',
@@ -234,6 +264,7 @@ export default function Navbar() {
         </div>
       </header>
 
+      {/* ── Bottom navigation bar ── */}
       <nav style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,
         height: 64,
@@ -256,6 +287,7 @@ export default function Navbar() {
               transition: 'color 0.15s',
               WebkitTapHighlightColor: 'transparent',
             }}>
+              {/* Active top stripe */}
               {active && (
                 <div style={{
                   position: 'absolute', top: 0, left: '50%',
@@ -265,6 +297,8 @@ export default function Navbar() {
                   borderRadius: '0 0 4px 4px',
                 }} />
               )}
+
+              {/* Icon + badge */}
               <span style={{ position: 'relative' }}>
                 {link.icon(col)}
                 {link.badge && unreadCount > 0 && (
@@ -280,6 +314,8 @@ export default function Navbar() {
                   </span>
                 )}
               </span>
+
+              {/* Label */}
               <span style={{ fontSize: 10, fontWeight: active ? 700 : 400, letterSpacing: '0.01em' }}>
                 {link.label}
               </span>
@@ -294,7 +330,11 @@ export default function Navbar() {
     </>
   )
 
-  /* ── DESKTOP / TABLET ── */
+  /* ════════════════════════════════════════════
+     DESKTOP / TABLET  ─  collapsible sidebar
+  ════════════════════════════════════════════ */
+
+  /* Animated label span */
   const Label = ({ children }) => (
     <span style={{
       overflow: 'hidden', whiteSpace: 'nowrap', display: 'inline-block',
@@ -306,6 +346,7 @@ export default function Navbar() {
     </span>
   )
 
+  /* Per-link style */
   const ls = active => ({
     display: 'flex', alignItems: 'center',
     gap: collapsed ? 0 : 12,
@@ -332,6 +373,7 @@ export default function Navbar() {
 
   return (
     <>
+      {/* ══ Sidebar ══ */}
       <aside style={{
         position: 'fixed', top: 0, left: 0, height: '100vh',
         width: collapsed ? NARROW : WIDE,
@@ -346,9 +388,7 @@ export default function Navbar() {
 
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', height: 68, padding: '0 17px', borderBottom: `1px solid ${WB}`, flexShrink: 0, gap: 10, overflow: 'hidden' }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: W15, border: `1px solid ${W25}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <span style={{ color: W, fontWeight: 800, fontSize: 9, lineHeight: 1.3, textAlign: 'center' }}>HC<br />DC</span>
-          </div>
+          <LogoIcon size={38} />
           <div style={{ overflow: 'hidden', maxWidth: collapsed ? 0 : 160, opacity: collapsed ? 0 : 1, transition: `max-width ${TR}, opacity ${collapsed ? '0.1s' : '0.2s'} ease ${collapsed ? '0s' : '0.08s'}`, flexShrink: 0 }}>
             <div style={{ color: W, fontWeight: 700, fontSize: 16, whiteSpace: 'nowrap' }}>FindIt</div>
             <div style={{ color: W50, fontSize: 11, whiteSpace: 'nowrap' }}>@ HCDC</div>
@@ -408,10 +448,12 @@ export default function Navbar() {
           })}
         </nav>
 
+        {/* Divider */}
         <div style={{ height: 1, background: WB, margin: '0 12px', flexShrink: 0 }} />
 
         {/* User card + logout */}
         <div style={{ flexShrink: 0, padding: 10, display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {/* Expanded user card */}
           {!collapsed && profile && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 10, background: W15, marginBottom: 2, overflow: 'hidden' }}>
               <AvatarCircle size={32} fs={12} />
@@ -421,6 +463,7 @@ export default function Navbar() {
               </div>
             </div>
           )}
+          {/* Collapsed avatar */}
           {collapsed && profile && (
             <div title={profile.full_name} style={{ width: 38, height: 38, borderRadius: '50%', background: W25, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 4px', overflow: 'hidden', flexShrink: 0 }}>
               {avatarUrl
@@ -428,6 +471,7 @@ export default function Navbar() {
                 : <span style={{ color: W, fontWeight: 700, fontSize: 14 }}>{initials}</span>}
             </div>
           )}
+          {/* Logout */}
           <button onClick={async () => { await supabase.auth.signOut(); navigate('/login') }} title={collapsed ? 'Log out' : ''} style={ls(false)}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.color = W }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = W70 }}
@@ -440,7 +484,7 @@ export default function Navbar() {
         </div>
       </aside>
 
-      {/* Floating notification bell (desktop/tablet) */}
+      {/* ── Floating notification bell (desktop/tablet) ── */}
       <div ref={notifRef} style={{ position: 'fixed', top: 16, right: 20, zIndex: 200 }}>
         <button onClick={() => setShowNotif(v => !v)} style={{
           width: 42, height: 42, borderRadius: '50%',
