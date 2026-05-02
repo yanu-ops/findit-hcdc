@@ -7,48 +7,27 @@ import LoadingSpinner from '../components/LoadingSpinner'
 const DARK_RED = '#8B0000'
 const CATS = ['Electronics', 'Clothing', 'ID / Cards', 'Bags', 'Books', 'Keys', 'Wallet', 'Other']
 
-/* ── SVG category icons (replaces emojis) ── */
-const CATEGORY_SVG = {
-  Electronics: (col = '#475569', size = 48) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
-    </svg>
-  ),
-  Clothing: (col = '#475569', size = 48) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-      <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
-    </svg>
-  ),
-  'ID / Cards': (col = '#475569', size = 48) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-      <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
-    </svg>
-  ),
-  Bags: (col = '#475569', size = 48) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-    </svg>
-  ),
-  Books: (col = '#475569', size = 48) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-    </svg>
-  ),
-  Keys: (col = '#475569', size = 48) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-      <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
-    </svg>
-  ),
-  Wallet: (col = '#475569', size = 48) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
-    </svg>
-  ),
-  Other: (col = '#475569', size = 48) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-    </svg>
-  ),
+/* ── Category SVG icons (no emojis) ── */
+function CatIconSVG(category, color = '#475569', size = 48) {
+  const props = { viewBox: '0 0 24 24', fill: 'none', stroke: color, strokeWidth: '1.4', strokeLinecap: 'round', strokeLinejoin: 'round', style: { width: size, height: size, opacity: 0.6 } }
+  switch (category) {
+    case 'Electronics':
+      return <svg {...props}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/></svg>
+    case 'Clothing':
+      return <svg {...props}><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>
+    case 'ID / Cards':
+      return <svg {...props}><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/></svg>
+    case 'Bags':
+      return <svg {...props}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    case 'Books':
+      return <svg {...props}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    case 'Keys':
+      return <svg {...props}><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg>
+    case 'Wallet':
+      return <svg {...props}><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
+    default:
+      return <svg {...props}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+  }
 }
 
 const CAT_COLOR = {
@@ -60,77 +39,6 @@ const CAT_BG = {
   Bags: '#FDF4FF', Books: '#FFFBEB', Keys: '#F0FDF4', Wallet: '#FDF2F8', Other: '#F8FAFC',
 }
 
-/* ── Shared SVG icon components ── */
-const IconCheck = ({ size = 16, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <polyline points="20 6 9 17 4 12"/>
-  </svg>
-)
-const IconEdit = ({ size = 15, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-  </svg>
-)
-const IconMessage = ({ size = 16, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </svg>
-)
-const IconCamera = ({ size = 32, color = '#94A3B8' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }}>
-    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-    <circle cx="12" cy="13" r="4"/>
-  </svg>
-)
-const IconPin = ({ size = 12, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-  </svg>
-)
-const IconCalendar = ({ size = 12, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-  </svg>
-)
-const IconTag = ({ size = 12, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
-  </svg>
-)
-const IconUser = ({ size = 14, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-  </svg>
-)
-const IconArrowLeft = ({ size = 16, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-  </svg>
-)
-const IconAlert = ({ size = 16, color = '#DC2626' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-  </svg>
-)
-const IconClose = ({ size = 18, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-)
-const IconLost = ({ size = 15, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-  </svg>
-)
-const IconFound = ({ size = 15, color = 'currentColor' }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
-    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    <polyline points="8 11 10.5 13.5 14.5 9"/>
-  </svg>
-)
-
 export default function PostDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -138,12 +46,12 @@ export default function PostDetail() {
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const [editing, setEditing] = useState(false)
-  const [editForm, setEditForm] = useState({})
+  const [editing, setEditing]         = useState(false)
+  const [editForm, setEditForm]       = useState({})
   const [editImageFile, setEditImageFile] = useState(null)
   const [editPreview, setEditPreview] = useState(null)
-  const [saving, setSaving] = useState(false)
-  const [editError, setEditError] = useState('')
+  const [saving, setSaving]           = useState(false)
+  const [editError, setEditError]     = useState('')
 
   useEffect(() => { fetchPost() }, [id])
 
@@ -157,6 +65,7 @@ export default function PostDetail() {
     setLoading(false)
   }
 
+  /* Keep poster avatar in sync live */
   useEffect(() => {
     if (!post?.users?.id) return
     const ch = supabase
@@ -220,7 +129,6 @@ export default function PostDetail() {
   const isResolved = post.status === 'resolved'
   const catColor   = CAT_COLOR[post.category] || '#475569'
   const catBg      = CAT_BG[post.category] || '#F8FAFC'
-  const CatIcon    = CATEGORY_SVG[post.category] || CATEGORY_SVG.Other
 
   const inputStyle = {
     width: '100%', padding: '11px 14px',
@@ -234,8 +142,8 @@ export default function PostDetail() {
   const upd = k => e => setEditForm(f => ({ ...f, [k]: e.target.value }))
 
   return (
-    /* Wider max-width — better use of desktop space */
-    <div style={{ maxWidth: 860, margin: '0 auto', width: '100%' }}>
+    /* Wider container — better use of desktop space */
+    <div style={{ maxWidth: 780, margin: '0 auto', width: '100%' }}>
 
       {/* Back button */}
       <button
@@ -244,186 +152,202 @@ export default function PostDetail() {
         onMouseEnter={e => e.currentTarget.style.color = '#0F172A'}
         onMouseLeave={e => e.currentTarget.style.color = '#64748B'}
       >
-        <IconArrowLeft size={16} color="currentColor" /> Back
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 15, height: 15 }}>
+          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Back
       </button>
 
       {/* ════════════════ VIEW MODE ════════════════ */}
       {!editing && (
         <div style={{ background: '#fff', borderRadius: 20, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1.5px solid #F1F5F9', overflow: 'hidden' }}>
 
-          {/* ── Two-column layout on desktop ── */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,0.9fr)', gap: 0 }}>
-
-            {/* LEFT — image */}
+          {/* ── Image on TOP — white background, contain, full width ── */}
+          {post.image_url ? (
             <div style={{
-              position: 'relative',
-              background: post.image_url ? '#111827' : catBg,
-              minHeight: 420,
+              width: '100%',
+              background: '#ffffff',       /* pure white — no dark bg anywhere */
               display: 'flex', alignItems: 'center', justifyContent: 'center',
+              borderBottom: '1px solid #F1F5F9',
               overflow: 'hidden',
             }}>
-              {post.image_url ? (
-                <img
-                  src={post.image_url}
-                  alt={post.title}
-                  style={{
-                    /* Fill 100% of container in both axes, never overflow, never stretch */
-                    position: 'absolute', inset: 0,
-                    width: '100%', height: '100%',
-                    objectFit: 'contain',
-                    objectPosition: 'center',
-                  }}
-                />
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, opacity: 0.55 }}>
-                  {CatIcon(catColor, 72)}
-                  <span style={{ fontSize: 13, fontWeight: 600, color: catColor }}>{post.category}</span>
-                </div>
-              )}
+              <img
+                src={post.image_url}
+                alt={post.title}
+                style={{
+                  width: '100%',
+                  maxHeight: 440,          /* generous height so tall images look great */
+                  objectFit: 'contain',    /* full image visible, no cropping */
+                  objectPosition: 'center',
+                  display: 'block',
+                }}
+              />
+            </div>
+          ) : (
+            /* No image — category icon placeholder, white bg */
+            <div style={{
+              width: '100%', height: 240,
+              background: catBg,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10,
+              borderBottom: '1px solid #F1F5F9',
+            }}>
+              {CatIconSVG(post.category, catColor, 64)}
+              <span style={{ fontSize: 13, fontWeight: 600, color: catColor, opacity: 0.7 }}>{post.category}</span>
+            </div>
+          )}
 
-              {/* Status badge overlay */}
+          {/* ── Details BELOW the image ── */}
+          <div style={{ padding: '24px 28px 28px' }}>
+
+            {/* Status badge + category chip row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
               <span style={{
-                position: 'absolute', top: 14, left: 14,
                 display: 'inline-flex', alignItems: 'center', gap: 5,
-                padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 700,
-                backdropFilter: 'blur(8px)',
+                fontSize: 12, fontWeight: 700, padding: '4px 12px', borderRadius: 99,
                 ...(isResolved
-                  ? { background: 'rgba(241,245,249,0.95)', color: '#64748B' }
+                  ? { background: '#F1F5F9', color: '#64748B' }
                   : post.type === 'lost'
-                    ? { background: 'rgba(139,0,0,0.88)', color: '#fff' }
-                    : { background: 'rgba(22,101,52,0.88)', color: '#fff' }),
+                    ? { background: '#FEF2F2', color: '#991B1B' }
+                    : { background: '#F0FDF4', color: '#166534' }),
               }}>
-                {isResolved
-                  ? <IconCheck size={13} color="#64748B" />
-                  : post.type === 'lost'
-                    ? <IconLost size={13} color="#fff" />
-                    : <IconFound size={13} color="#fff" />
-                }
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', flexShrink: 0 }} />
                 {isResolved ? 'Resolved' : post.type === 'lost' ? 'Lost' : 'Found'}
+              </span>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 99,
+                background: catBg, color: catColor,
+                border: `1px solid ${catColor}22`,
+              }}>
+                {CatIconSVG(post.category, catColor, 13)}
+                {post.category}
               </span>
             </div>
 
-            {/* RIGHT — details */}
-            <div style={{ padding: '32px 32px 28px', display: 'flex', flexDirection: 'column', gap: 0, overflowY: 'auto' }}>
+            {/* Title */}
+            <h1 style={{ fontSize: 26, fontWeight: 800, color: '#0F172A', margin: '0 0 10px', lineHeight: 1.2, letterSpacing: '-0.3px' }}>
+              {post.title}
+            </h1>
 
-              {/* Category chip */}
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 99, background: catBg, color: catColor, fontSize: 12, fontWeight: 600, marginBottom: 14, alignSelf: 'flex-start', border: `1px solid ${catColor}22` }}>
-                {CatIcon(catColor, 14)}
-                {post.category}
-              </div>
+            {/* Description */}
+            <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.75, margin: '0 0 24px' }}>
+              {post.description}
+            </p>
 
-              {/* Title */}
-              <h1 style={{ fontSize: 26, fontWeight: 800, color: '#0F172A', margin: '0 0 10px', lineHeight: 1.2, letterSpacing: '-0.3px' }}>
-                {post.title}
-              </h1>
-
-              {/* Description */}
-              <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.75, margin: '0 0 24px' }}>
-                {post.description}
-              </p>
-
-              {/* Meta rows */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
-                {[
-                  { Icon: IconPin,      label: 'Location', value: post.location },
-                  { Icon: IconCalendar, label: 'Date',     value: new Date(post.date_lost_found).toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' }) },
-                  { Icon: IconTag,      label: 'Category', value: post.category },
-                ].map(({ Icon, label, value }) => (
-                  <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: '#F8FAFC', borderRadius: 10, border: '1px solid #F1F5F9' }}>
-                    <div style={{ width: 28, height: 28, borderRadius: 8, background: '#fff', border: '1px solid #E5E9F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Icon size={13} color="#64748B" />
-                    </div>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 10, fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</div>
-                      <div style={{ fontSize: 13, fontWeight: 500, color: '#0F172A', marginTop: 1 }}>{value}</div>
-                    </div>
+            {/* Meta rows */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+              {[
+                {
+                  icon: <svg viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14, flexShrink: 0 }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+                  label: 'Location', value: post.location,
+                },
+                {
+                  icon: <svg viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14, flexShrink: 0 }}><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+                  label: 'Date', value: new Date(post.date_lost_found).toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' }),
+                },
+              ].map(({ icon, label, value }) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#F8FAFC', borderRadius: 10, border: '1px solid #F1F5F9' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: 8, background: '#fff', border: '1px solid #E5E9F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {icon}
                   </div>
-                ))}
-              </div>
-
-              {/* Poster */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 14px', background: '#F8FAFC', borderRadius: 12, border: '1px solid #F1F5F9', marginBottom: 20 }}>
-                <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#1A56DB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 14, flexShrink: 0, overflow: 'hidden' }}>
-                  {post.users?.avatar_url
-                    ? <img src={post.users.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : post.users?.full_name?.charAt(0).toUpperCase()
-                  }
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#0F172A' }}>{post.users?.full_name}</div>
-                  <div style={{ fontSize: 11, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 4, marginTop: 1 }}>
-                    <IconUser size={11} color="#94A3B8" /> Posted this item
+                  <div>
+                    <div style={{ fontSize: 10, fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: '#0F172A', marginTop: 1 }}>{value}</div>
                   </div>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              {/* Actions */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 'auto' }}>
-                {isResolved ? (
-                  <>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#F0FDF4', border: '1.5px solid #BBF7D0', borderRadius: 12, padding: '12px', fontSize: 14, fontWeight: 600, color: '#166534' }}>
-                      <IconCheck size={16} color="#16A34A" /> This item has been resolved
-                    </div>
-                    {isOwner && (
-                      <button onClick={openEdit}
-                        style={{ width: '100%', padding: '12px', background: '#F8FAFC', color: '#0F172A', border: '1.5px solid #E5E9F0', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, transition: 'background 0.15s' }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
-                        onMouseLeave={e => e.currentTarget.style.background = '#F8FAFC'}
-                      >
-                        <IconEdit size={15} color="#0F172A" /> Edit Post
-                      </button>
-                    )}
-                  </>
-                ) : isOwner ? (
-                  <>
-                    <button onClick={handleResolve}
-                      style={{ width: '100%', padding: '12px', background: '#16A34A', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, transition: 'background 0.15s' }}
-                      onMouseEnter={e => e.currentTarget.style.background = '#15803D'}
-                      onMouseLeave={e => e.currentTarget.style.background = '#16A34A'}
-                    >
-                      <IconCheck size={16} color="#fff" /> Mark as Resolved
-                    </button>
+            {/* Poster card */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: '#F8FAFC', borderRadius: 12, border: '1px solid #F1F5F9', marginBottom: 22 }}>
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#1A56DB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 14, flexShrink: 0, overflow: 'hidden' }}>
+                {post.users?.avatar_url
+                  ? <img src={post.users.avatar_url} alt={post.users.full_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : post.users?.full_name?.charAt(0).toUpperCase()
+                }
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A', margin: 0 }}>{post.users?.full_name}</p>
+                <p style={{ fontSize: 12, color: '#94A3B8', margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11 }}>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                  </svg>
+                  Posted this item
+                </p>
+              </div>
+            </div>
+
+            {/* Action buttons */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {isResolved ? (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#F0FDF4', border: '1.5px solid #BBF7D0', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 600, color: '#166534' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    This item has been resolved
+                  </div>
+                  {isOwner && (
                     <button onClick={openEdit}
                       style={{ width: '100%', padding: '12px', background: '#F8FAFC', color: '#0F172A', border: '1.5px solid #E5E9F0', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, transition: 'background 0.15s' }}
                       onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
                       onMouseLeave={e => e.currentTarget.style.background = '#F8FAFC'}
                     >
-                      <IconEdit size={15} color="#0F172A" /> Edit Post
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 15, height: 15 }}>
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                      Edit Post
                     </button>
-                  </>
-                ) : (
-                  <button onClick={() => navigate(`/chat/${post.id}/${post.users.id}`)}
-                    style={{ width: '100%', padding: '13px', background: '#1A56DB', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'background 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#1446B8'}
-                    onMouseLeave={e => e.currentTarget.style.background = '#1A56DB'}
+                  )}
+                </>
+              ) : isOwner ? (
+                <>
+                  <button onClick={handleResolve}
+                    style={{ width: '100%', padding: '13px', background: '#16A34A', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, transition: 'background 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#15803D'}
+                    onMouseLeave={e => e.currentTarget.style.background = '#16A34A'}
                   >
-                    <IconMessage size={16} color="#fff" />
-                    Message {post.users?.full_name?.split(' ')[0]}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Mark as Resolved
                   </button>
-                )}
-              </div>
+                  <button onClick={openEdit}
+                    style={{ width: '100%', padding: '12px', background: '#F8FAFC', color: '#0F172A', border: '1.5px solid #E5E9F0', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, transition: 'background 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
+                    onMouseLeave={e => e.currentTarget.style.background = '#F8FAFC'}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 15, height: 15 }}>
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Edit Post
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => navigate(`/chat/${post.id}/${post.users.id}`)}
+                  style={{ width: '100%', padding: '13px', background: '#1A56DB', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'background 0.15s' }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#1446B8'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#1A56DB'}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  Message {post.users?.full_name?.split(' ')[0]}
+                </button>
+              )}
             </div>
           </div>
-
-          {/* ── Mobile stacked fallback via CSS ── */}
-          <style>{`
-            @media (max-width: 680px) {
-              .post-detail-grid {
-                grid-template-columns: 1fr !important;
-              }
-              .post-detail-image {
-                min-height: 260px !important;
-                max-height: 320px !important;
-              }
-            }
-          `}</style>
         </div>
       )}
 
       {/* ════════════════ EDIT MODE ════════════════ */}
       {editing && (
         <div style={{ background: '#fff', borderRadius: 20, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1.5px solid #F1F5F9', overflow: 'hidden' }}>
-          <div style={{ padding: '22px 28px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #F1F5F9', paddingBottom: 18 }}>
+
+          {/* Edit header */}
+          <div style={{ padding: '22px 28px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #F1F5F9' }}>
             <div>
               <h2 style={{ fontSize: 20, fontWeight: 700, color: '#0F172A', margin: 0 }}>Edit Post</h2>
               <p style={{ fontSize: 13, color: '#64748B', margin: '3px 0 0' }}>Update the details for this item</p>
@@ -433,14 +357,18 @@ export default function PostDetail() {
               onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.borderColor = '#FECACA'; e.currentTarget.style.color = '#991B1B' }}
               onMouseLeave={e => { e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.borderColor = '#E5E9F0'; e.currentTarget.style.color = '#64748B' }}
             >
-              <IconClose size={16} />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 15, height: 15 }}>
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
             </button>
           </div>
 
           <div style={{ padding: '24px 28px 28px' }}>
             {editError && (
               <div style={{ background: '#FEF2F2', border: '1.5px solid #FECACA', color: '#991B1B', borderRadius: 10, padding: '11px 14px', fontSize: 13, marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <IconAlert size={16} />
+                <svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16, flexShrink: 0 }}>
+                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
                 {editError}
               </div>
             )}
@@ -449,22 +377,19 @@ export default function PostDetail() {
 
               {/* Type toggle */}
               <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Item Status *</label>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status *</label>
                 <div style={{ display: 'flex', gap: 10 }}>
                   {[
-                    { val: 'lost',  label: 'Lost',  Icon: IconLost  },
-                    { val: 'found', label: 'Found', Icon: IconFound },
-                  ].map(({ val, label, Icon }) => {
-                    const active = editForm.type === val
-                    return (
-                      <button key={val} type="button" onClick={() => setEditForm(f => ({ ...f, type: val }))}
-                        style={{ flex: 1, padding: '11px 10px', borderRadius: 10, border: active ? 'none' : '1.5px solid #E5E9F0', background: active ? (val === 'lost' ? DARK_RED : '#15803D') : '#F8FAFC', color: active ? '#fff' : '#475569', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, transition: 'all 0.15s' }}
-                      >
-                        <Icon size={15} color={active ? '#fff' : '#475569'} />
-                        {label}
-                      </button>
-                    )
-                  })}
+                    { val: 'lost',  label: 'Lost'  },
+                    { val: 'found', label: 'Found' },
+                  ].map(({ val, label }) => (
+                    <button key={val} type="button"
+                      onClick={() => setEditForm(f => ({ ...f, type: val }))}
+                      style={{ flex: 1, padding: '11px', borderRadius: 10, border: editForm.type === val ? 'none' : '1.5px solid #E5E9F0', background: editForm.type === val ? (val === 'lost' ? DARK_RED : '#15803D') : '#F8FAFC', color: editForm.type === val ? '#fff' : '#475569', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -505,18 +430,16 @@ export default function PostDetail() {
                 <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 6 }}>Photo (optional)</label>
                 <label style={{ display: 'block', cursor: 'pointer' }}>
                   {editPreview ? (
-                    <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', background: '#0F172A' }}>
-                      <img src={editPreview} alt="preview" style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }} />
+                    <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', background: '#ffffff' }}>
+                      <img src={editPreview} alt="preview" style={{ width: '100%', maxHeight: 220, objectFit: 'contain', display: 'block' }} />
                       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.15s' }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.45)'}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.4)'}
                         onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0)'}
                       >
-                        <div style={{ opacity: 0, transition: 'opacity 0.15s', display: 'flex', alignItems: 'center', gap: 7, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 13, fontWeight: 600, padding: '8px 16px', borderRadius: 99 }}
+                        <span style={{ opacity: 0, color: '#fff', fontWeight: 600, fontSize: 13, background: 'rgba(0,0,0,0.6)', padding: '8px 16px', borderRadius: 99, transition: 'opacity 0.15s' }}
                           onMouseEnter={e => e.currentTarget.style.opacity = 1}
                           onMouseLeave={e => e.currentTarget.style.opacity = 0}
-                        >
-                          <IconCamera size={16} color="#fff" /> Change photo
-                        </div>
+                        >Click to change photo</span>
                       </div>
                     </div>
                   ) : (
@@ -524,18 +447,19 @@ export default function PostDetail() {
                       onMouseEnter={e => { e.currentTarget.style.borderColor = DARK_RED; e.currentTarget.style.background = '#FDF2F2' }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.background = 'transparent' }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-                        <IconCamera size={36} color="#CBD5E1" />
-                      </div>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36, marginBottom: 10, display: 'block', margin: '0 auto 10px' }}>
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                        <circle cx="12" cy="13" r="4"/>
+                      </svg>
                       <div style={{ fontSize: 14, fontWeight: 500, color: '#475569', marginBottom: 4 }}>Click to upload a photo</div>
-                      <div style={{ fontSize: 12, color: '#94A3B8' }}>JPG, PNG, WEBP supported</div>
+                      <div style={{ fontSize: 12 }}>JPG, PNG, WEBP supported</div>
                     </div>
                   )}
                   <input type="file" accept="image/*" onChange={handleEditImage} style={{ display: 'none' }} />
                 </label>
               </div>
 
-              {/* Form actions */}
+              {/* Form buttons */}
               <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
                 <button type="submit" disabled={saving}
                   style={{ flex: 1, padding: '13px', background: saving ? '#94A3B8' : DARK_RED, color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, transition: 'background 0.15s' }}
@@ -544,15 +468,20 @@ export default function PostDetail() {
                 >
                   {saving
                     ? <><div style={{ width: 15, height: 15, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> Saving…</>
-                    : <><IconCheck size={15} color="#fff" /> Save Changes</>
+                    : <>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 15, height: 15 }}>
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        Save Changes
+                      </>
                   }
                 </button>
                 <button type="button" onClick={() => setEditing(false)}
-                  style={{ flex: 1, padding: '13px', background: '#F8FAFC', color: '#475569', border: '1.5px solid #E5E9F0', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7 }}
+                  style={{ flex: 1, padding: '13px', background: '#F8FAFC', color: '#475569', border: '1.5px solid #E5E9F0', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, transition: 'background 0.15s' }}
                   onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
                   onMouseLeave={e => e.currentTarget.style.background = '#F8FAFC'}
                 >
-                  <IconClose size={14} color="#475569" /> Cancel
+                  Cancel
                 </button>
               </div>
             </form>
@@ -560,12 +489,7 @@ export default function PostDetail() {
         </div>
       )}
 
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @media (max-width: 680px) {
-          .post-detail-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }
