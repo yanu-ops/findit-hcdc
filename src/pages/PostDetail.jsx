@@ -3,30 +3,35 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import useStore from '../store/useStore'
 import LoadingSpinner from '../components/LoadingSpinner'
+import Alert from '../components/Alert'
 
 const DARK_RED = '#8B0000'
 const CATS = ['Electronics', 'Clothing', 'ID / Cards', 'Bags', 'Books', 'Keys', 'Wallet', 'Other']
 
-/* ── Category SVG icons (no emojis) ── */
-function CatIconSVG(category, color = '#475569', size = 48) {
-  const props = { viewBox: '0 0 24 24', fill: 'none', stroke: color, strokeWidth: '1.4', strokeLinecap: 'round', strokeLinejoin: 'round', style: { width: size, height: size, opacity: 0.6 } }
+/* ── Category SVG icons ── */
+function CatIconSVG(category, color = '#94A3B8', size = 56) {
+  const p = {
+    viewBox: '0 0 24 24', fill: 'none', stroke: color,
+    strokeWidth: '1.4', strokeLinecap: 'round', strokeLinejoin: 'round',
+    style: { width: size, height: size, opacity: 0.7 },
+  }
   switch (category) {
     case 'Electronics':
-      return <svg {...props}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/></svg>
+      return <svg {...p}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/></svg>
     case 'Clothing':
-      return <svg {...props}><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>
+      return <svg {...p}><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>
     case 'ID / Cards':
-      return <svg {...props}><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/></svg>
+      return <svg {...p}><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/></svg>
     case 'Bags':
-      return <svg {...props}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      return <svg {...p}><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
     case 'Books':
-      return <svg {...props}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      return <svg {...p}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
     case 'Keys':
-      return <svg {...props}><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg>
+      return <svg {...p}><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg>
     case 'Wallet':
-      return <svg {...props}><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
+      return <svg {...p}><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
     default:
-      return <svg {...props}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      return <svg {...p}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
   }
 }
 
@@ -39,6 +44,9 @@ const CAT_BG = {
   Bags: '#FDF4FF', Books: '#FFFBEB', Keys: '#F0FDF4', Wallet: '#FDF2F8', Other: '#F8FAFC',
 }
 
+/* Fixed image zone height — same for every post, with or without a photo */
+const IMAGE_HEIGHT = 360
+
 export default function PostDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -46,12 +54,16 @@ export default function PostDetail() {
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const [editing, setEditing]         = useState(false)
-  const [editForm, setEditForm]       = useState({})
+  /* Edit state */
+  const [editing, setEditing]             = useState(false)
+  const [editForm, setEditForm]           = useState({})
   const [editImageFile, setEditImageFile] = useState(null)
-  const [editPreview, setEditPreview] = useState(null)
-  const [saving, setSaving]           = useState(false)
-  const [editError, setEditError]     = useState('')
+  const [editPreview, setEditPreview]     = useState(null)
+  const [saving, setSaving]               = useState(false)
+  const [editError, setEditError]         = useState('')
+
+  /* Success / error alert */
+  const [alert, setAlert] = useState(null)   // { type, text }
 
   useEffect(() => { fetchPost() }, [id])
 
@@ -102,15 +114,30 @@ export default function PostDetail() {
     e.preventDefault()
     setEditError('')
     setSaving(true)
+
     let image_url = post.image_url
     if (editImageFile) {
       const fn = `${user.id}/${Date.now()}-${editImageFile.name}`
-      const { data: upData, error: upErr } = await supabase.storage.from('item-photos').upload(fn, editImageFile)
-      if (upErr) { setEditError('Image upload failed. Please try again.'); setSaving(false); return }
+      const { data: upData, error: upErr } = await supabase.storage
+        .from('item-photos').upload(fn, editImageFile)
+      if (upErr) {
+        setEditError('Image upload failed. Please try again.')
+        setSaving(false)
+        return
+      }
       image_url = supabase.storage.from('item-photos').getPublicUrl(upData.path).data.publicUrl
     }
+
     const { error } = await supabase.from('posts').update({ ...editForm, image_url }).eq('id', id)
-    if (error) { setEditError(error.message) } else { await fetchPost(); setEditing(false) }
+
+    if (error) {
+      setEditError(error.message)
+    } else {
+      await fetchPost()
+      setEditing(false)
+      /* ── Success alert ── */
+      setAlert({ type: 'success', text: `"${editForm.title}" has been updated successfully.` })
+    }
     setSaving(false)
   }
 
@@ -118,6 +145,7 @@ export default function PostDetail() {
     if (!confirm('Mark this post as Resolved?')) return
     await supabase.from('posts').update({ status: 'resolved' }).eq('id', id)
     fetchPost()
+    setAlert({ type: 'success', text: 'Post marked as resolved.' })
   }
 
   if (loading) return <LoadingSpinner />
@@ -142,8 +170,16 @@ export default function PostDetail() {
   const upd = k => e => setEditForm(f => ({ ...f, [k]: e.target.value }))
 
   return (
-    /* Wider container — better use of desktop space */
     <div style={{ maxWidth: 780, margin: '0 auto', width: '100%' }}>
+
+      {/* Alert toast */}
+      {alert && (
+        <Alert
+          message={alert.text}
+          type={alert.type}
+          onClose={() => setAlert(null)}
+        />
+      )}
 
       {/* Back button */}
       <button
@@ -162,44 +198,42 @@ export default function PostDetail() {
       {!editing && (
         <div style={{ background: '#fff', borderRadius: 20, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1.5px solid #F1F5F9', overflow: 'hidden' }}>
 
-          {/* ── Image on TOP — white background, contain, full width ── */}
-          {post.image_url ? (
-            <div style={{
-              width: '100%',
-              background: '#ffffff',       /* pure white — no dark bg anywhere */
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              borderBottom: '1px solid #F1F5F9',
-              overflow: 'hidden',
-            }}>
+          {/* ── Image zone: ALWAYS IMAGE_HEIGHT px tall, white bg ── */}
+          <div style={{
+            width: '100%',
+            height: IMAGE_HEIGHT,       /* fixed — identical for every post */
+            background: post.image_url ? '#ffffff' : catBg,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            overflow: 'hidden',
+            borderBottom: '1px solid #F1F5F9',
+            flexShrink: 0,
+          }}>
+            {post.image_url ? (
               <img
                 src={post.image_url}
                 alt={post.title}
                 style={{
                   width: '100%',
-                  maxHeight: 440,          /* generous height so tall images look great */
-                  objectFit: 'contain',    /* full image visible, no cropping */
+                  height: '100%',
+                  objectFit: 'contain',      /* full image visible, no crop */
                   objectPosition: 'center',
                   display: 'block',
                 }}
               />
-            </div>
-          ) : (
-            /* No image — category icon placeholder, white bg */
-            <div style={{
-              width: '100%', height: 240,
-              background: catBg,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10,
-              borderBottom: '1px solid #F1F5F9',
-            }}>
-              {CatIconSVG(post.category, catColor, 64)}
-              <span style={{ fontSize: 13, fontWeight: 600, color: catColor, opacity: 0.7 }}>{post.category}</span>
-            </div>
-          )}
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+                {CatIconSVG(post.category, catColor, 64)}
+                <span style={{ fontSize: 13, fontWeight: 600, color: catColor, opacity: 0.7 }}>
+                  {post.category}
+                </span>
+              </div>
+            )}
+          </div>
 
-          {/* ── Details BELOW the image ── */}
+          {/* ── Details below image ── */}
           <div style={{ padding: '24px 28px 28px' }}>
 
-            {/* Status badge + category chip row */}
+            {/* Status + category chips */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
               <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -216,26 +250,25 @@ export default function PostDetail() {
               <span style={{
                 display: 'inline-flex', alignItems: 'center', gap: 5,
                 fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 99,
-                background: catBg, color: catColor,
-                border: `1px solid ${catColor}22`,
+                background: catBg, color: catColor, border: `1px solid ${catColor}22`,
               }}>
-                {CatIconSVG(post.category, catColor, 13)}
+                {CatIconSVG(post.category, catColor, 12)}
                 {post.category}
               </span>
             </div>
 
             {/* Title */}
-            <h1 style={{ fontSize: 26, fontWeight: 800, color: '#0F172A', margin: '0 0 10px', lineHeight: 1.2, letterSpacing: '-0.3px' }}>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: '#0F172A', margin: '0 0 10px', lineHeight: 1.2, letterSpacing: '-0.3px' }}>
               {post.title}
             </h1>
 
             {/* Description */}
-            <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.75, margin: '0 0 24px' }}>
+            <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.75, margin: '0 0 22px' }}>
               {post.description}
             </p>
 
             {/* Meta rows */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 22 }}>
               {[
                 {
                   icon: <svg viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14, flexShrink: 0 }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
@@ -258,22 +291,17 @@ export default function PostDetail() {
               ))}
             </div>
 
-            {/* Poster card */}
+            {/* Poster */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: '#F8FAFC', borderRadius: 12, border: '1px solid #F1F5F9', marginBottom: 22 }}>
               <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#1A56DB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 14, flexShrink: 0, overflow: 'hidden' }}>
                 {post.users?.avatar_url
-                  ? <img src={post.users.avatar_url} alt={post.users.full_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ? <img src={post.users.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   : post.users?.full_name?.charAt(0).toUpperCase()
                 }
               </div>
               <div>
                 <p style={{ fontSize: 14, fontWeight: 600, color: '#0F172A', margin: 0 }}>{post.users?.full_name}</p>
-                <p style={{ fontSize: 12, color: '#94A3B8', margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11 }}>
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                  </svg>
-                  Posted this item
-                </p>
+                <p style={{ fontSize: 12, color: '#94A3B8', margin: '2px 0 0' }}>Posted this item</p>
               </div>
             </div>
 
@@ -282,9 +310,7 @@ export default function PostDetail() {
               {isResolved ? (
                 <>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#F0FDF4', border: '1.5px solid #BBF7D0', borderRadius: 12, padding: '13px', fontSize: 14, fontWeight: 600, color: '#166534' }}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}><polyline points="20 6 9 17 4 12"/></svg>
                     This item has been resolved
                   </div>
                   {isOwner && (
@@ -308,9 +334,7 @@ export default function PostDetail() {
                     onMouseEnter={e => e.currentTarget.style.background = '#15803D'}
                     onMouseLeave={e => e.currentTarget.style.background = '#16A34A'}
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}><polyline points="20 6 9 17 4 12"/></svg>
                     Mark as Resolved
                   </button>
                   <button onClick={openEdit}
@@ -393,7 +417,7 @@ export default function PostDetail() {
                 </div>
               </div>
 
-              {/* Two-column grid for compact form on desktop */}
+              {/* Two-column grid */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                 <div>
                   <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 6 }}>Item Name *</label>
@@ -430,24 +454,38 @@ export default function PostDetail() {
                 <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#374151', marginBottom: 6 }}>Photo (optional)</label>
                 <label style={{ display: 'block', cursor: 'pointer' }}>
                   {editPreview ? (
-                    <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', background: '#ffffff' }}>
-                      <img src={editPreview} alt="preview" style={{ width: '100%', maxHeight: 220, objectFit: 'contain', display: 'block' }} />
-                      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.15s' }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.4)'}
+                    <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', background: '#ffffff', border: '1.5px solid #E5E9F0' }}>
+                      {/* Preview uses the same fixed height for consistency */}
+                      <img
+                        src={editPreview}
+                        alt="preview"
+                        style={{ width: '100%', height: IMAGE_HEIGHT, objectFit: 'contain', display: 'block' }}
+                      />
+                      <div
+                        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.15s' }}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,0,0,0.38)'}
                         onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0)'}
                       >
-                        <span style={{ opacity: 0, color: '#fff', fontWeight: 600, fontSize: 13, background: 'rgba(0,0,0,0.6)', padding: '8px 16px', borderRadius: 99, transition: 'opacity 0.15s' }}
+                        <span
+                          style={{ opacity: 0, color: '#fff', fontWeight: 600, fontSize: 13, background: 'rgba(0,0,0,0.65)', padding: '8px 18px', borderRadius: 99, transition: 'opacity 0.15s', display: 'flex', alignItems: 'center', gap: 6 }}
                           onMouseEnter={e => e.currentTarget.style.opacity = 1}
                           onMouseLeave={e => e.currentTarget.style.opacity = 0}
-                        >Click to change photo</span>
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}>
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                          </svg>
+                          Click to change photo
+                        </span>
                       </div>
                     </div>
                   ) : (
-                    <div style={{ border: '2px dashed #E5E7EB', borderRadius: 12, padding: '32px', textAlign: 'center', color: '#94A3B8', transition: 'border-color 0.15s, background 0.15s' }}
+                    <div
+                      style={{ border: '2px dashed #E5E7EB', borderRadius: 12, padding: '40px', textAlign: 'center', color: '#94A3B8', transition: 'border-color 0.15s, background 0.15s' }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = DARK_RED; e.currentTarget.style.background = '#FDF2F2' }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.background = 'transparent' }}
                     >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36, marginBottom: 10, display: 'block', margin: '0 auto 10px' }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 40, height: 40, marginBottom: 10, display: 'block', margin: '0 auto 10px' }}>
                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                         <circle cx="12" cy="13" r="4"/>
                       </svg>

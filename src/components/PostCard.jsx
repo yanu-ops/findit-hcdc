@@ -12,12 +12,7 @@ const CAT = {
       </svg>
     ),
     card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.6 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36 }}>
         <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
       </svg>
     ),
@@ -30,12 +25,7 @@ const CAT = {
       </svg>
     ),
     card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.6 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36 }}>
         <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
       </svg>
     ),
@@ -48,12 +38,7 @@ const CAT = {
       </svg>
     ),
     card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.6 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36 }}>
         <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
       </svg>
     ),
@@ -66,12 +51,7 @@ const CAT = {
       </svg>
     ),
     card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.6 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36 }}>
         <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
       </svg>
     ),
@@ -84,12 +64,7 @@ const CAT = {
       </svg>
     ),
     card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.6 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36 }}>
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
       </svg>
     ),
@@ -102,12 +77,7 @@ const CAT = {
       </svg>
     ),
     card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.6 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36 }}>
         <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
       </svg>
     ),
@@ -120,12 +90,7 @@ const CAT = {
       </svg>
     ),
     card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.6 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36 }}>
         <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
       </svg>
     ),
@@ -138,12 +103,7 @@ const CAT = {
       </svg>
     ),
     card: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 32, height: 32 }}>
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-      </svg>
-    ),
-    big: col => (
-      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 56, height: 56, opacity: 0.6 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width: 36, height: 36 }}>
         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
       </svg>
     ),
@@ -152,10 +112,25 @@ const CAT = {
 
 /* ── Shared small icons ── */
 const PinIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 10, height: 10, flexShrink: 0 }}>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
   </svg>
 )
+
+const CalIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
+)
+
+const ChevronRight = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16, flexShrink: 0 }}>
+    <polyline points="9 18 15 12 9 6"/>
+  </svg>
+)
+
+/* ── Fixed card height for desktop — image + text always identical ── */
+const DESKTOP_CARD_H = 140
 
 function useIsMobile() {
   const [v, setV] = useState(() => window.innerWidth < 640)
@@ -181,8 +156,8 @@ export default function PostCard({ post }) {
 
   /* ══════════════════════════════════════════════════════
      MOBILE — full-width horizontal list card
-     image left (100×100 square) · text right
-     One card per row — flex column in Browse handles layout
+     image left (100×100) · text right
+     One per row — Browse renders flex column
   ══════════════════════════════════════════════════════ */
   if (isMobile) return (
     <Link
@@ -202,7 +177,7 @@ export default function PostCard({ post }) {
       onTouchStart={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'}
       onTouchEnd={e => e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'}
     >
-      {/* Left — fixed square thumbnail, white bg, contain */}
+      {/* Left — fixed square thumbnail */}
       <div style={{
         width: 100, height: 100, flexShrink: 0,
         background: post.image_url ? '#ffffff' : cat.bg,
@@ -210,52 +185,30 @@ export default function PostCard({ post }) {
         overflow: 'hidden',
       }}>
         {post.image_url
-          ? <img
-              src={post.image_url}
-              alt={post.title}
-              style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center' }}
-            />
+          ? <img src={post.image_url} alt={post.title}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center' }} />
           : cat.card(cat.color)
         }
       </div>
 
-      {/* Right — text details */}
+      {/* Right — text */}
       <div style={{
         flex: 1, minWidth: 0,
         padding: '12px 14px',
         display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 5,
       }}>
-        {/* Title */}
-        <span style={{
-          fontSize: 14, fontWeight: 700, color: '#0F172A',
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-        }}>
+        <span style={{ fontSize: 14, fontWeight: 700, color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {post.title}
         </span>
-
-        {/* Location + date */}
-        <span style={{
-          fontSize: 12, color: '#64748B',
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          display: 'flex', alignItems: 'center', gap: 4,
-        }}>
+        <span style={{ fontSize: 12, color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }}>
           <PinIcon />
           {post.location} · {new Date(post.date_lost_found).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}
         </span>
-
-        {/* Poster + status badge */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{
-            fontSize: 11, color: DARK_RED, fontWeight: 600,
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          }}>
+          <span style={{ fontSize: 11, color: DARK_RED, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {post.users?.full_name || 'Unknown'}
           </span>
-          <span style={{
-            fontSize: 10, fontWeight: 700,
-            padding: '3px 9px', borderRadius: 99, flexShrink: 0, marginLeft: 8,
-            background: badge.bg, color: badge.color,
-          }}>
+          <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 9px', borderRadius: 99, flexShrink: 0, marginLeft: 8, background: badge.bg, color: badge.color }}>
             {badge.label}
           </span>
         </div>
@@ -264,129 +217,119 @@ export default function PostCard({ post }) {
   )
 
   /* ══════════════════════════════════════════════════════
-     DESKTOP / TABLET — vertical card
-     Image top: fixed 180px · Text bottom: fixed 112px
-     Total always 292px — every card identical height
+     DESKTOP — horizontal row card (image left, text right)
+     2 per row via CSS grid in Browse.jsx
+     Fixed DESKTOP_CARD_H so every card is identical height
   ══════════════════════════════════════════════════════ */
   return (
     <Link
       to={`/post/${post.id}`}
       style={{
-        display: 'flex', flexDirection: 'column',
-        background: '#fff', borderRadius: 16,
-        border: '1.5px solid #E5E9F0', textDecoration: 'none',
+        display: 'flex',
+        flexDirection: 'row',
+        height: DESKTOP_CARD_H,          /* fixed — every card identical */
+        background: '#fff',
+        borderRadius: 16,
         overflow: 'hidden',
-        boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
-        transition: 'transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease',
+        textDecoration: 'none',
+        border: '1.5px solid #E5E9F0',
+        boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+        transition: 'box-shadow 0.18s ease, border-color 0.18s ease, transform 0.18s ease',
       }}
       onMouseEnter={e => {
         e.currentTarget.style.borderColor = '#C41E3A'
-        e.currentTarget.style.boxShadow = '0 8px 28px rgba(139,0,0,0.13)'
-        e.currentTarget.style.transform = 'translateY(-3px)'
+        e.currentTarget.style.boxShadow = '0 6px 24px rgba(139,0,0,0.13)'
+        e.currentTarget.style.transform = 'translateY(-2px)'
       }}
       onMouseLeave={e => {
         e.currentTarget.style.borderColor = '#E5E9F0'
-        e.currentTarget.style.boxShadow = '0 1px 6px rgba(0,0,0,0.05)'
+        e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.05)'
         e.currentTarget.style.transform = 'translateY(0)'
       }}
     >
-      {/* ── Image zone: fixed 180px, white bg, objectFit contain ── */}
+      {/* ── Image left — fixed square, white bg, contain ── */}
       <div style={{
-        width: '100%', height: 180,
-        flexShrink: 0, position: 'relative',
-        overflow: 'hidden',
+        width: DESKTOP_CARD_H,           /* square: same as card height */
+        height: DESKTOP_CARD_H,
+        flexShrink: 0,
         background: post.image_url ? '#ffffff' : cat.bg,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden',
+        borderRight: '1px solid #F1F5F9',
       }}>
         {post.image_url
           ? <img
               src={post.image_url}
               alt={post.title}
-              style={{
-                width: '100%', height: '100%',
-                objectFit: 'contain',
-                objectPosition: 'center',
-                display: 'block',
-              }}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block' }}
             />
-          : <div style={{ width: '100%', height: '100%', background: cat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {cat.big(cat.color)}
-            </div>
+          : cat.card(cat.color)
         }
-
-        {/* Status badge — top right */}
-        <span style={{
-          position: 'absolute', top: 10, right: 10,
-          background: isRes ? '#F1F5F9' : isLost ? 'rgba(139,0,0,0.88)' : 'rgba(22,101,52,0.88)',
-          color: isRes ? '#64748B' : '#fff',
-          fontSize: 11, fontWeight: 700,
-          padding: '4px 10px', borderRadius: 99,
-          backdropFilter: 'blur(4px)',
-          display: 'flex', alignItems: 'center', gap: 5,
-          boxShadow: '0 1px 6px rgba(0,0,0,0.15)',
-        }}>
-          <span style={{ width: 5, height: 5, borderRadius: '50%', background: isRes ? '#94A3B8' : '#fff', flexShrink: 0 }} />
-          {badge.label}
-        </span>
-
-        {/* Category chip — bottom left */}
-        <span style={{
-          position: 'absolute', bottom: 10, left: 10,
-          background: 'rgba(255,255,255,0.92)', color: cat.color,
-          fontSize: 11, fontWeight: 600,
-          padding: '4px 9px', borderRadius: 99,
-          display: 'flex', alignItems: 'center', gap: 5,
-          backdropFilter: 'blur(4px)',
-        }}>
-          {cat.chip(cat.color)}
-          {post.category}
-        </span>
       </div>
 
-      {/* ── Text zone: fixed 112px, never grows ── */}
+      {/* ── Text right ── */}
       <div style={{
-        height: 112, flexShrink: 0,
-        padding: '12px 14px',
+        flex: 1, minWidth: 0,
+        padding: '16px 18px',
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         overflow: 'hidden',
       }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {/* Title — 1 line, ellipsis */}
-          <h3 style={{
-            fontSize: 14, fontWeight: 700, color: '#0F172A',
-            margin: 0, lineHeight: 1.3,
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          }}>
-            {post.title}
-          </h3>
+        {/* Top: title + description */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+
+          {/* Title row with status badge */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+            <h3 style={{
+              fontSize: 16, fontWeight: 700, color: '#0F172A',
+              margin: 0, lineHeight: 1.25,
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              flex: 1, minWidth: 0,
+            }}>
+              {post.title}
+            </h3>
+            <span style={{
+              fontSize: 11, fontWeight: 700,
+              padding: '3px 10px', borderRadius: 99, flexShrink: 0,
+              background: badge.bg, color: badge.color,
+            }}>
+              {badge.label}
+            </span>
+          </div>
 
           {/* Description — 2 lines max */}
           <p style={{
-            fontSize: 12, color: '#64748B', margin: 0, lineHeight: 1.45,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
+            fontSize: 13, color: '#64748B', margin: 0, lineHeight: 1.5,
+            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}>
             {post.description}
           </p>
         </div>
 
-        {/* Bottom row: location + poster first name */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 3,
-            fontSize: 11, color: '#64748B',
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          }}>
-            <PinIcon /> {post.location}
-          </span>
-          <span style={{
-            fontSize: 11, color: DARK_RED, fontWeight: 600,
-            flexShrink: 0, marginLeft: 8,
-          }}>
-            by {post.users?.full_name?.split(' ')[0] || 'Unknown'}
-          </span>
+        {/* Bottom: meta + chevron */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
+            {/* Location */}
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#475569', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <PinIcon /> {post.location}
+            </span>
+            {/* Date */}
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#94A3B8' }}>
+              <CalIcon /> {new Date(post.date_lost_found).toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            {/* Category chip */}
+            <span style={{
+              display: 'flex', alignItems: 'center', gap: 4,
+              fontSize: 11, fontWeight: 600, color: cat.color,
+              background: cat.bg, padding: '3px 9px', borderRadius: 99,
+            }}>
+              {cat.chip(cat.color)} {post.category}
+            </span>
+            <ChevronRight />
+          </div>
         </div>
       </div>
     </Link>
