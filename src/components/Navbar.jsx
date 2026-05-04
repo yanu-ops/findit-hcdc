@@ -46,6 +46,113 @@ function useBreakpoint() {
   return bp
 }
 
+/* ── Logout Confirmation Modal ──────────────────────────── */
+function LogoutModal({ onConfirm, onCancel, loading }) {
+  // Close on Escape key
+  useEffect(() => {
+    const fn = e => { if (e.key === 'Escape' && !loading) onCancel() }
+    window.addEventListener('keydown', fn)
+    return () => window.removeEventListener('keydown', fn)
+  }, [loading, onCancel])
+
+  return (
+    <div
+      onClick={e => { if (e.target === e.currentTarget && !loading) onCancel() }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9000,
+        background: 'rgba(0,0,0,0.45)',
+        backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 20,
+        animation: 'modalFadeIn 0.18s ease',
+      }}
+    >
+      <div style={{
+        background: '#fff',
+        borderRadius: 20,
+        padding: '32px 28px',
+        width: '100%',
+        maxWidth: 380,
+        boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+        animation: 'modalSlideIn 0.2s ease',
+        textAlign: 'center',
+      }}>
+        {/* Icon */}
+        <div style={{
+          width: 60, height: 60, borderRadius: '50%',
+          background: '#FEF2F2', border: '2px solid #FECACA',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 18px',
+        }}>
+          {loading
+            ? <div style={{ width: 26, height: 26, border: '3px solid #FECACA', borderTopColor: DR, borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+            : (
+              <svg viewBox="0 0 24 24" fill="none" stroke={DR} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            )
+          }
+        </div>
+
+        {/* Title */}
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#0F172A', margin: '0 0 8px' }}>
+          {loading ? 'Logging out…' : 'Log Out?'}
+        </h2>
+
+        {/* Message */}
+        <p style={{ fontSize: 14, color: '#64748B', margin: '0 0 28px', lineHeight: 1.6 }}>
+          {loading
+            ? 'Please wait while we sign you out safely.'
+            : 'Are you sure you want to log out of FindIt @ HCDC?'
+          }
+        </p>
+
+        {/* Buttons */}
+        {!loading && (
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button
+              onClick={onCancel}
+              style={{
+                flex: 1, padding: '12px',
+                background: '#F8FAFC', color: '#475569',
+                border: '1.5px solid #E5E9F0', borderRadius: 12,
+                fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                fontFamily: 'inherit', transition: 'background 0.15s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
+              onMouseLeave={e => e.currentTarget.style.background = '#F8FAFC'}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              style={{
+                flex: 1, padding: '12px',
+                background: DR, color: '#fff',
+                border: 'none', borderRadius: 12,
+                fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                fontFamily: 'inherit', transition: 'background 0.15s',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#6B0000'}
+              onMouseLeave={e => e.currentTarget.style.background = DR}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 15, height: 15 }}>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Log Out
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 /* ── Nav link definitions ───────────────────────────────── */
 const SB = [
   {
@@ -103,6 +210,10 @@ export default function Navbar() {
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem('sb-collapsed') === 'true' } catch { return false }
   })
+
+  /* Logout modal state */
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
+  const [loggingOut, setLoggingOut]           = useState(false)
 
   useEffect(() => {
     try { localStorage.setItem('sb-collapsed', collapsed) } catch {}
@@ -169,6 +280,22 @@ export default function Navbar() {
     navigate(n.link)
   }
 
+  /* Logout handlers */
+  function requestLogout() {
+    setShowLogoutModal(true)
+  }
+
+  async function confirmLogout() {
+    setLoggingOut(true)
+    await supabase.auth.signOut()
+    navigate('/login')
+    // No need to reset loading — page will unmount
+  }
+
+  function cancelLogout() {
+    setShowLogoutModal(false)
+  }
+
   const isActive  = to => to === '/' ? location.pathname === '/' : location.pathname.startsWith(to)
   const avatarUrl = profile?.avatar_url
   const initials  = profile?.full_name?.charAt(0).toUpperCase() || '?'
@@ -227,6 +354,15 @@ export default function Navbar() {
   ════════════════════════════════════════════ */
   if (isMobile) return (
     <>
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <LogoutModal
+          onConfirm={confirmLogout}
+          onCancel={cancelLogout}
+          loading={loggingOut}
+        />
+      )}
+
       {/* ── Top header ── */}
       <header style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: 56,
@@ -325,7 +461,10 @@ export default function Navbar() {
       </nav>
 
       <style>{`
-        @keyframes notifIn { from{opacity:0;transform:translateY(-6px) scale(.97)} to{opacity:1;transform:none} }
+        @keyframes notifIn    { from{opacity:0;transform:translateY(-6px) scale(.97)} to{opacity:1;transform:none} }
+        @keyframes modalFadeIn  { from{opacity:0} to{opacity:1} }
+        @keyframes modalSlideIn { from{opacity:0;transform:translateY(12px) scale(.97)} to{opacity:1;transform:none} }
+        @keyframes spin         { to{transform:rotate(360deg)} }
       `}</style>
     </>
   )
@@ -363,16 +502,17 @@ export default function Navbar() {
     fontFamily: 'inherit', width: '100%',
   })
 
-  const AvatarCircle = ({ size = 32, fs = 12 }) => (
-    <div style={{ width: size, height: size, borderRadius: '50%', background: W25, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-      {avatarUrl
-        ? <img src={avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        : <span style={{ color: W, fontWeight: 700, fontSize: fs }}>{initials}</span>}
-    </div>
-  )
-
   return (
     <>
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <LogoutModal
+          onConfirm={confirmLogout}
+          onCancel={cancelLogout}
+          loading={loggingOut}
+        />
+      )}
+
       {/* ══ Sidebar ══ */}
       <aside style={{
         position: 'fixed', top: 0, left: 0, height: '100vh',
@@ -456,7 +596,11 @@ export default function Navbar() {
           {/* Expanded user card */}
           {!collapsed && profile && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 10, background: W15, marginBottom: 2, overflow: 'hidden' }}>
-              <AvatarCircle size={32} fs={12} />
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: W25, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                {avatarUrl
+                  ? <img src={avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ color: W, fontWeight: 700, fontSize: 12 }}>{initials}</span>}
+              </div>
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <div style={{ color: W, fontSize: 13, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.full_name}</div>
                 <div style={{ color: W50, fontSize: 11, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.student_id || profile.email}</div>
@@ -471,15 +615,23 @@ export default function Navbar() {
                 : <span style={{ color: W, fontWeight: 700, fontSize: 14 }}>{initials}</span>}
             </div>
           )}
-          {/* Logout */}
-          <button onClick={async () => { await supabase.auth.signOut(); navigate('/login') }} title={collapsed ? 'Log out' : ''} style={ls(false)}
+          {/* Logout button — opens modal */}
+          <button
+            onClick={requestLogout}
+            title={collapsed ? 'Log out' : ''}
+            style={ls(false)}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)'; e.currentTarget.style.color = W }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = W70 }}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20, flexShrink: 0 }}>
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            <Label>Log Out</Label>
+            {loggingOut
+              ? <div style={{ width: 20, height: 20, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: W, borderRadius: '50%', animation: 'spin 0.7s linear infinite', flexShrink: 0 }} />
+              : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20, flexShrink: 0 }}>
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              )
+            }
+            <Label>{loggingOut ? 'Logging out…' : 'Log Out'}</Label>
           </button>
         </div>
       </aside>
@@ -509,7 +661,10 @@ export default function Navbar() {
       </div>
 
       <style>{`
-        @keyframes notifIn { from{opacity:0;transform:translateY(-6px) scale(.97)} to{opacity:1;transform:none} }
+        @keyframes notifIn    { from{opacity:0;transform:translateY(-6px) scale(.97)} to{opacity:1;transform:none} }
+        @keyframes modalFadeIn  { from{opacity:0} to{opacity:1} }
+        @keyframes modalSlideIn { from{opacity:0;transform:translateY(12px) scale(.97)} to{opacity:1;transform:none} }
+        @keyframes spin         { to{transform:rotate(360deg)} }
       `}</style>
     </>
   )

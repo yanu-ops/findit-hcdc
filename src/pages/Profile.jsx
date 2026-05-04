@@ -6,6 +6,112 @@ import LoadingSpinner from '../components/LoadingSpinner'
 
 const DARK_RED = '#8B0000'
 
+/* ── Logout Confirmation Modal ──────────────────────────── */
+function LogoutModal({ onConfirm, onCancel, loading }) {
+  useEffect(() => {
+    const fn = e => { if (e.key === 'Escape' && !loading) onCancel() }
+    window.addEventListener('keydown', fn)
+    return () => window.removeEventListener('keydown', fn)
+  }, [loading, onCancel])
+
+  return (
+    <div
+      onClick={e => { if (e.target === e.currentTarget && !loading) onCancel() }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9000,
+        background: 'rgba(0,0,0,0.45)',
+        backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 20,
+        animation: 'modalFadeIn 0.18s ease',
+      }}
+    >
+      <div style={{
+        background: '#fff',
+        borderRadius: 20,
+        padding: '32px 28px',
+        width: '100%',
+        maxWidth: 380,
+        boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+        animation: 'modalSlideIn 0.2s ease',
+        textAlign: 'center',
+      }}>
+        {/* Icon */}
+        <div style={{
+          width: 60, height: 60, borderRadius: '50%',
+          background: '#FEF2F2', border: '2px solid #FECACA',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 18px',
+        }}>
+          {loading
+            ? <div style={{ width: 26, height: 26, border: '3px solid #FECACA', borderTopColor: DARK_RED, borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+            : (
+              <svg viewBox="0 0 24 24" fill="none" stroke={DARK_RED} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 28, height: 28 }}>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            )
+          }
+        </div>
+
+        {/* Title */}
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: '#0F172A', margin: '0 0 8px' }}>
+          {loading ? 'Logging out…' : 'Log Out?'}
+        </h2>
+
+        {/* Message */}
+        <p style={{ fontSize: 14, color: '#64748B', margin: '0 0 28px', lineHeight: 1.6 }}>
+          {loading
+            ? 'Please wait while we sign you out safely.'
+            : 'Are you sure you want to log out of FindIt @ HCDC?'
+          }
+        </p>
+
+        {/* Buttons — hidden while loading */}
+        {!loading && (
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button
+              onClick={onCancel}
+              style={{
+                flex: 1, padding: '12px',
+                background: '#F8FAFC', color: '#475569',
+                border: '1.5px solid #E5E9F0', borderRadius: 12,
+                fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                fontFamily: 'inherit', transition: 'background 0.15s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
+              onMouseLeave={e => e.currentTarget.style.background = '#F8FAFC'}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              style={{
+                flex: 1, padding: '12px',
+                background: DARK_RED, color: '#fff',
+                border: 'none', borderRadius: 12,
+                fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                fontFamily: 'inherit', transition: 'background 0.15s',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#6B0000'}
+              onMouseLeave={e => e.currentTarget.style.background = DARK_RED}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 15, height: 15 }}>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Log Out
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function Profile() {
   const { user, profile, setProfile } = useStore()
   const navigate = useNavigate()
@@ -16,6 +122,10 @@ export default function Profile() {
   const [editing, setEditing]     = useState(false)
   const [saving, setSaving]       = useState(false)
   const [saveError, setSaveError] = useState('')
+
+  /* Logout modal state */
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
+  const [loggingOut, setLoggingOut]           = useState(false)
 
   // Edit fields
   const [editName,    setEditName]    = useState('')
@@ -56,7 +166,6 @@ export default function Profile() {
 
   async function handleSave() {
     setSaveError('')
-    // Validate contact if filled
     if (editContact && !/^[\d\s\-\+\(\)]{7,15}$/.test(editContact.trim())) {
       setSaveError('Please enter a valid contact number.')
       return
@@ -106,9 +215,19 @@ export default function Profile() {
     }
   }
 
-  async function handleLogout() {
+  /* Logout handlers */
+  function requestLogout() {
+    setShowLogoutModal(true)
+  }
+
+  async function confirmLogout() {
+    setLoggingOut(true)
     await supabase.auth.signOut()
     navigate('/login')
+  }
+
+  function cancelLogout() {
+    setShowLogoutModal(false)
   }
 
   if (loading) return <LoadingSpinner />
@@ -127,6 +246,16 @@ export default function Profile() {
 
   return (
     <div style={{ maxWidth: 480, margin: '0 auto' }}>
+
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <LogoutModal
+          onConfirm={confirmLogout}
+          onCancel={cancelLogout}
+          loading={loggingOut}
+        />
+      )}
+
       <h1 style={{ fontSize: 24, fontWeight: 700, color: '#0F172A', marginBottom: 24 }}>Profile</h1>
 
       {/* ── Profile card ── */}
@@ -174,7 +303,6 @@ export default function Profile() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <h2 style={{ fontSize: 18, fontWeight: 700, color: '#0F172A', margin: 0 }}>{profile?.full_name}</h2>
 
-              {/* Info rows */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 6 }}>
                 {/* Email */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -325,16 +453,45 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Logout */}
-      <button onClick={handleLogout}
-        style={{ width: '100%', padding: '12px', background: '#FEF2F2', color: '#991B1B', border: '1.5px solid #FECACA', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', transition: 'background 0.15s' }}
-        onMouseEnter={e => e.currentTarget.style.background = '#FEE2E2'}
-        onMouseLeave={e => e.currentTarget.style.background = '#FEF2F2'}
+      {/* ── Log Out button ── */}
+      <button
+        onClick={requestLogout}
+        disabled={loggingOut}
+        style={{
+          width: '100%', padding: '13px',
+          background: loggingOut ? '#FEE2E2' : '#FEF2F2',
+          color: '#991B1B',
+          border: '1.5px solid #FECACA',
+          borderRadius: 12, fontSize: 14, fontWeight: 600,
+          cursor: loggingOut ? 'not-allowed' : 'pointer',
+          fontFamily: 'inherit',
+          transition: 'background 0.15s',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        }}
+        onMouseEnter={e => { if (!loggingOut) e.currentTarget.style.background = '#FEE2E2' }}
+        onMouseLeave={e => { if (!loggingOut) e.currentTarget.style.background = '#FEF2F2' }}
       >
-        Log Out
+        {loggingOut
+          ? <>
+              <div style={{ width: 16, height: 16, border: '2.5px solid #FECACA', borderTopColor: '#991B1B', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+              Logging out…
+            </>
+          : <>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#991B1B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Log Out
+            </>
+        }
       </button>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin         { to { transform: rotate(360deg); } }
+        @keyframes modalFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: none; } }
+      `}</style>
     </div>
   )
 }
