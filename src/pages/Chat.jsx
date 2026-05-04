@@ -6,6 +6,68 @@ import LoadingSpinner from '../components/LoadingSpinner'
 
 const REACTION_EMOJIS = ['❤️', '😂', '😮', '😢', '👍', '👎']
 
+/* ── Category SVG icons ─────────────────────────────────── */
+const CAT_ICONS = {
+  Electronics: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
+    </svg>
+  ),
+  Clothing: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
+    </svg>
+  ),
+  'ID / Cards': (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
+    </svg>
+  ),
+  Bags: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+  ),
+  Books: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+  ),
+  Keys: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
+    </svg>
+  ),
+  Wallet: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
+    </svg>
+  ),
+  Other: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+    </svg>
+  ),
+}
+
+const CAT_COLOR = {
+  Electronics: '#1D4ED8', Clothing: '#15803D', 'ID / Cards': '#C2410C',
+  Bags: '#7E22CE', Books: '#B45309', Keys: '#15803D',
+  Wallet: '#9D174D', Other: '#475569',
+}
+
+const CAT_BG = {
+  Electronics: '#EFF6FF', Clothing: '#F0FDF4', 'ID / Cards': '#FFF7ED',
+  Bags: '#FDF4FF', Books: '#FFFBEB', Keys: '#F0FDF4',
+  Wallet: '#FDF2F8', Other: '#F8FAFC',
+}
+
+function getCatIcon(category, size = 12) {
+  const fn  = CAT_ICONS[category] || CAT_ICONS.Other
+  const col = CAT_COLOR[category] || CAT_COLOR.Other
+  return fn(col, size)
+}
+
 /* ─── tiny helpers ─── */
 function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() &&
@@ -110,15 +172,14 @@ export default function Chat() {
   const [tooltip, setTooltip]           = useState(null)
 
   const bottomRef   = useRef(null)
-  const scrollRef   = useRef(null)   // ref on the messages scroll container
+  const scrollRef   = useRef(null)
   const channelRef  = useRef(null)
   const fileRef     = useRef(null)
   const pickerRef   = useRef(null)
-  const msgCountRef = useRef(0)      // tracks previous message count to detect NEW messages
+  const msgCountRef = useRef(0)
 
   const isOtherOnline = onlineUsers?.has?.(userId) ?? false
 
-  /* ── Smart scroll: only scroll to bottom when a NEW message arrives ── */
   function isNearBottom() {
     const el = scrollRef.current
     if (!el) return true
@@ -155,7 +216,6 @@ export default function Chat() {
       setMessages(msgs || [])
       msgCountRef.current = (msgs || []).length
       setLoading(false)
-      // Instant scroll on initial load (no animation needed)
       setTimeout(() => scrollToBottom(false), 50)
     }
     init()
@@ -174,7 +234,6 @@ export default function Chat() {
         if (msg.receiver_id === user.id) markRead()
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages', filter: `post_id=eq.${postId}` }, ({ new: updated }) => {
-        // UPDATE (reactions, is_read) — update in place, do NOT scroll
         setMessages(prev => prev.map(m => m.id === updated.id ? { ...m, ...updated } : m))
       })
       .subscribe()
@@ -189,14 +248,11 @@ export default function Chat() {
     }
   }, [postId, userId, user.id, markRead])
 
-  /* ── Scroll only when message COUNT increases (new message), not on updates ── */
+  /* ── Scroll only when message COUNT increases ── */
   useEffect(() => {
     if (messages.length > msgCountRef.current) {
       msgCountRef.current = messages.length
-      // Only auto-scroll if user is already near the bottom
-      if (isNearBottom()) {
-        scrollToBottom(true)
-      }
+      if (isNearBottom()) scrollToBottom(true)
     }
   }, [messages])
 
@@ -223,7 +279,7 @@ export default function Chat() {
   /* ── Send ── */
   async function sendMessage(e) {
     e.preventDefault()
-    if ((!input.trim() && !imageFile) || sending) return
+    if ((!input.trim() && !imageFile) || sending || isResolved) return
     setSending(true)
 
     let image_url = null
@@ -260,7 +316,6 @@ export default function Chat() {
       Object.keys(updated).forEach(k => { if (k.endsWith(`__${user.id}`)) delete updated[k] })
       updated[userKey] = emoji
     }
-    // Optimistic — does NOT change message count so scroll won't trigger
     setMessages(prev => prev.map(m => m.id === msgId ? { ...m, reactions: updated } : m))
     await supabase.from('messages').update({ reactions: updated }).eq('id', msgId)
   }
@@ -277,6 +332,9 @@ export default function Chat() {
   const isOwner    = user?.id === post?.user_id
   const isResolved = post?.status === 'resolved'
   const msgMap     = Object.fromEntries(messages.map(m => [m.id, m]))
+  const category   = post?.category || 'Other'
+  const catColor   = CAT_COLOR[category] || CAT_COLOR.Other
+  const catBg      = CAT_BG[category]    || CAT_BG.Other
 
   const lastSeenIdx = (() => {
     for (let i = messages.length - 1; i >= 0; i--)
@@ -291,7 +349,6 @@ export default function Chat() {
 
   return (
     <div style={{
-      /* ── WIDER desktop container ── */
       maxWidth: 900,
       width: '100%',
       margin: '0 auto',
@@ -306,21 +363,33 @@ export default function Chat() {
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748B', display: 'flex', padding: 4, borderRadius: 8 }}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 18, height: 18 }}><polyline points="15 18 9 12 15 6" /></svg>
         </button>
+
+        {/* Avatar with online dot only — no text label */}
         <div style={{ position: 'relative', flexShrink: 0 }}>
           <Av url={otAvatar} name={otName} size={42} />
-          <span style={{ position: 'absolute', bottom: 1, right: 1, width: 12, height: 12, borderRadius: '50%', background: isOtherOnline ? '#16A34A' : '#DC2626', border: '2.5px solid #fff' }} />
+          <span style={{ position: 'absolute', bottom: 1, right: 1, width: 12, height: 12, borderRadius: '50%', background: isOtherOnline ? '#16A34A' : '#94A3B8', border: '2.5px solid #fff' }} />
         </div>
+
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <p style={{ fontSize: 15, fontWeight: 700, color: '#0F172A', margin: 0 }}>{otName}</p>
-            <span style={{ fontSize: 11, fontWeight: 600, color: isOtherOnline ? '#16A34A' : '#DC2626' }}>
-              ● {isOtherOnline ? 'Online' : 'Offline'}
+          {/* Name only — no online/offline text */}
+          <p style={{ fontSize: 15, fontWeight: 700, color: '#0F172A', margin: '0 0 3px' }}>{otName}</p>
+
+          {/* Category icon + post title — replaces the red/green dot */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4,
+              background: catBg, borderRadius: 99,
+              padding: '1px 7px 1px 5px', flexShrink: 0,
+            }}>
+              {getCatIcon(category, 11)}
+              <span style={{ fontSize: 10, fontWeight: 600, color: catColor }}>{category}</span>
+            </span>
+            <span style={{ fontSize: 12, color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {post?.title}
             </span>
           </div>
-          <p style={{ fontSize: 12, color: '#64748B', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            <span style={{ color: post?.type === 'lost' ? '#DC2626' : '#16A34A', marginRight: 4 }}>●</span>{post?.title}
-          </p>
         </div>
+
         {isOwner && !isResolved && (
           <button onClick={handleResolve}
             style={{ background: '#F0FDF4', color: '#166534', border: '1px solid #BBF7D0', borderRadius: 99, padding: '7px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
@@ -330,6 +399,7 @@ export default function Chat() {
         )}
       </div>
 
+      {/* ── Resolved banner ── */}
       {isResolved && (
         <div style={{ background: '#F0FDF4', border: '1.5px solid #BBF7D0', borderRadius: 12, padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#166534', marginBottom: 10, flexShrink: 0 }}>
           ✓ This item has been resolved
@@ -380,7 +450,7 @@ export default function Chat() {
                 {!isMe && <Av url={otAvatar} name={otName} size={32} />}
 
                 {/* Action bar LEFT (my messages) */}
-                {isMe && (
+                {isMe && !isResolved && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, opacity: isHovered ? 1 : 0, transition: 'opacity 0.15s', flexShrink: 0 }}>
                     <button
                       onClick={() => setReplyTo(msg)}
@@ -406,17 +476,14 @@ export default function Chat() {
                 {/* Bubble column */}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMe ? 'flex-end' : 'flex-start', maxWidth: '68%' }}>
 
-                  {/* ── Quote block — clearly visible ── */}
+                  {/* Quote block */}
                   {quotedMsg && (
                     <div
                       onClick={() => document.getElementById(`msg-${quotedMsg.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                       style={{
-                        cursor: 'pointer',
-                        marginBottom: 2,
-                        padding: '8px 12px',
+                        cursor: 'pointer', marginBottom: 2, padding: '8px 12px',
                         borderRadius: '12px 12px 0 0',
                         borderLeft: `4px solid ${isMe ? '#93C5FD' : '#2563EB'}`,
-                        /* solid opaque background — clearly visible on both sides */
                         background: isMe ? '#1D4ED8' : '#E8F0FE',
                         maxWidth: '100%',
                         boxShadow: isMe ? 'inset 0 0 0 1px rgba(255,255,255,0.12)' : 'inset 0 0 0 1px #BFDBFE',
@@ -470,8 +537,8 @@ export default function Chat() {
                   {hasReact && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6, justifyContent: isMe ? 'flex-end' : 'flex-start' }}>
                       {Object.entries(reactions).map(([emoji, uids]) => {
-                        const iMine   = uids.includes(user.id)
-                        const names   = uids.map(uid => uid === user.id ? 'You' : otName)
+                        const iMine    = uids.includes(user.id)
+                        const names    = uids.map(uid => uid === user.id ? 'You' : otName)
                         const isHovTip = tooltip?.msgId === msg.id && tooltip?.emoji === emoji
                         return (
                           <div key={`${msg.id}-${emoji}`} style={{ position: 'relative' }}>
@@ -503,7 +570,7 @@ export default function Chat() {
                 </div>
 
                 {/* Action bar RIGHT (other's messages) */}
-                {!isMe && (
+                {!isMe && !isResolved && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, opacity: isHovered ? 1 : 0, transition: 'opacity 0.15s', flexShrink: 0 }}>
                     <button
                       onClick={() => setReactionPickerFor(reactionPickerFor === msg.id ? null : msg.id)}
@@ -556,61 +623,77 @@ export default function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      {/* ── Input area ── */}
+      {/* ── Input area — replaced with ended notice when resolved ── */}
       <div style={{ flexShrink: 0, marginTop: 10 }}>
-
-        {/* Reply strip */}
-        {replyTo && (
-          <QuoteStrip msg={replyTo} myId={user.id} otherName={otName} onCancel={() => setReplyTo(null)} />
-        )}
-
-        {/* Image preview */}
-        {imagePreview && (
-          <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
-            <img src={imagePreview} alt="preview" style={{ height: 80, width: 80, objectFit: 'cover', borderRadius: 10, border: '1.5px solid #E5E9F0', display: 'block' }} />
-            <button onClick={clearImage} style={{ position: 'absolute', top: -6, right: -6, width: 20, height: 20, borderRadius: '50%', background: '#DC2626', border: '2px solid #fff', color: '#fff', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>✕</button>
-          </div>
-        )}
-
-        <form onSubmit={sendMessage} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          {/* Attach */}
-          <button type="button" onClick={() => fileRef.current?.click()}
-            style={{ flexShrink: 0, width: 42, height: 42, borderRadius: '50%', background: '#F8FAFC', border: '1.5px solid #E5E9F0', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748B', transition: 'background 0.15s, color 0.15s' }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#EFF6FF'; e.currentTarget.style.color = '#2563EB' }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.color = '#64748B' }}
-            title="Attach photo"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 19, height: 19 }}>
-              <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
+        {isResolved ? (
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            background: '#F8FAFC', border: '1.5px solid #E5E9F0',
+            borderRadius: 16, padding: '16px 20px',
+          }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: 18, height: 18, flexShrink: 0 }}>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
-          </button>
-          <input ref={fileRef} type="file" accept="image/*" onChange={handleImagePick} style={{ display: 'none' }} />
+            <span style={{ fontSize: 13, color: '#94A3B8', fontWeight: 500 }}>
+              This conversation has ended — the item was marked as resolved.
+            </span>
+          </div>
+        ) : (
+          <>
+            {/* Reply strip */}
+            {replyTo && (
+              <QuoteStrip msg={replyTo} myId={user.id} otherName={otName} onCancel={() => setReplyTo(null)} />
+            )}
 
-          {/* Text */}
-          <input
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e) } }}
-            placeholder={imageFile ? 'Add a caption…' : 'Type a message…'}
-            style={{ flex: 1, background: '#fff', border: '1.5px solid #E5E9F0', borderRadius: 24, padding: '12px 20px', fontSize: 14, outline: 'none', fontFamily: 'inherit', color: '#0F172A', transition: 'border-color 0.15s, box-shadow 0.15s' }}
-            onFocus={e => { e.target.style.borderColor = '#2563EB'; e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.10)' }}
-            onBlur={e => { e.target.style.borderColor = '#E5E9F0'; e.target.style.boxShadow = 'none' }}
-          />
+            {/* Image preview */}
+            {imagePreview && (
+              <div style={{ position: 'relative', display: 'inline-block', marginBottom: 8 }}>
+                <img src={imagePreview} alt="preview" style={{ height: 80, width: 80, objectFit: 'cover', borderRadius: 10, border: '1.5px solid #E5E9F0', display: 'block' }} />
+                <button onClick={clearImage} style={{ position: 'absolute', top: -6, right: -6, width: 20, height: 20, borderRadius: '50%', background: '#DC2626', border: '2px solid #fff', color: '#fff', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}>✕</button>
+              </div>
+            )}
 
-          {/* Send */}
-          <button type="submit" disabled={(!input.trim() && !imageFile) || sending}
-            style={{ flexShrink: 0, width: 42, height: 42, borderRadius: '50%', background: (!input.trim() && !imageFile) || sending ? '#CBD5E1' : '#2563EB', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: (!input.trim() && !imageFile) || sending ? 'not-allowed' : 'pointer', transition: 'background 0.15s' }}
-            onMouseEnter={e => { if (input.trim() || imageFile) e.currentTarget.style.background = '#1D4ED8' }}
-            onMouseLeave={e => { e.currentTarget.style.background = (!input.trim() && !imageFile) || sending ? '#CBD5E1' : '#2563EB' }}
-          >
-            {uploading
-              ? <div style={{ width: 16, height: 16, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-              : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
-                  <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+            <form onSubmit={sendMessage} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              {/* Attach */}
+              <button type="button" onClick={() => fileRef.current?.click()}
+                style={{ flexShrink: 0, width: 42, height: 42, borderRadius: '50%', background: '#F8FAFC', border: '1.5px solid #E5E9F0', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748B', transition: 'background 0.15s, color 0.15s' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#EFF6FF'; e.currentTarget.style.color = '#2563EB' }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.color = '#64748B' }}
+                title="Attach photo"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 19, height: 19 }}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
                 </svg>
-            }
-          </button>
-        </form>
+              </button>
+              <input ref={fileRef} type="file" accept="image/*" onChange={handleImagePick} style={{ display: 'none' }} />
+
+              {/* Text */}
+              <input
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(e) } }}
+                placeholder={imageFile ? 'Add a caption…' : 'Type a message…'}
+                style={{ flex: 1, background: '#fff', border: '1.5px solid #E5E9F0', borderRadius: 24, padding: '12px 20px', fontSize: 14, outline: 'none', fontFamily: 'inherit', color: '#0F172A', transition: 'border-color 0.15s, box-shadow 0.15s' }}
+                onFocus={e => { e.target.style.borderColor = '#2563EB'; e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.10)' }}
+                onBlur={e => { e.target.style.borderColor = '#E5E9F0'; e.target.style.boxShadow = 'none' }}
+              />
+
+              {/* Send */}
+              <button type="submit" disabled={(!input.trim() && !imageFile) || sending}
+                style={{ flexShrink: 0, width: 42, height: 42, borderRadius: '50%', background: (!input.trim() && !imageFile) || sending ? '#CBD5E1' : '#2563EB', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: (!input.trim() && !imageFile) || sending ? 'not-allowed' : 'pointer', transition: 'background 0.15s' }}
+                onMouseEnter={e => { if (input.trim() || imageFile) e.currentTarget.style.background = '#1D4ED8' }}
+                onMouseLeave={e => { e.currentTarget.style.background = (!input.trim() && !imageFile) || sending ? '#CBD5E1' : '#2563EB' }}
+              >
+                {uploading
+                  ? <div style={{ width: 16, height: 16, border: '2.5px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                  : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
+                      <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                }
+              </button>
+            </form>
+          </>
+        )}
       </div>
 
       {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}

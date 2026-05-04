@@ -4,6 +4,69 @@ import { supabase } from '../lib/supabase'
 import useStore from '../store/useStore'
 import LoadingSpinner from '../components/LoadingSpinner'
 
+/* ── Category SVG icons ─────────────────────────────────── */
+const CAT_ICONS = {
+  Electronics: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-2l-2 4h-4l-2-4H4"/>
+    </svg>
+  ),
+  Clothing: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
+    </svg>
+  ),
+  'ID / Cards': (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 11h4M13 15h3"/>
+    </svg>
+  ),
+  Bags: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+  ),
+  Books: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+  ),
+  Keys: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>
+    </svg>
+  ),
+  Wallet: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/>
+    </svg>
+  ),
+  Other: (col, size) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size, flexShrink: 0 }}>
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+    </svg>
+  ),
+}
+
+const CAT_COLOR = {
+  Electronics: '#1D4ED8', Clothing: '#15803D', 'ID / Cards': '#C2410C',
+  Bags: '#7E22CE', Books: '#B45309', Keys: '#15803D',
+  Wallet: '#9D174D', Other: '#475569',
+}
+
+const CAT_BG = {
+  Electronics: '#EFF6FF', Clothing: '#F0FDF4', 'ID / Cards': '#FFF7ED',
+  Bags: '#FDF4FF', Books: '#FFFBEB', Keys: '#F0FDF4',
+  Wallet: '#FDF2F8', Other: '#F8FAFC',
+}
+
+function getCatIcon(category, size = 13) {
+  const fn  = CAT_ICONS[category] || CAT_ICONS.Other
+  const col = CAT_COLOR[category] || CAT_COLOR.Other
+  return fn(col, size)
+}
+
+/* ── Thread builder ─────────────────────────────────────── */
 function buildThreads(messages, userId) {
   const threadMap = {}
   let unread = 0
@@ -30,6 +93,7 @@ function buildThreads(messages, userId) {
   return { threads: Object.values(threadMap), unread }
 }
 
+/* ── Main component ─────────────────────────────────────── */
 export default function Inbox() {
   const { user, setUnreadCount, setNotifCount, setThreads, onlineUsers } = useStore()
   const navigate = useNavigate()
@@ -41,7 +105,7 @@ export default function Inbox() {
       .from('messages')
       .select(`
         *,
-        posts(id, title, type, status),
+        posts(id, title, type, status, category),
         sender:sender_id(id, full_name, avatar_url),
         receiver:receiver_id(id, full_name, avatar_url)
       `)
@@ -79,8 +143,6 @@ export default function Inbox() {
 
   async function handleThreadClick(thread) {
     if (thread.unreadCount > 0) {
-      // Optimistically clear dot — compute new total from the freshly-updated list
-      // to avoid stale closure issues with the outer `threads` variable
       setLocalThreads(prev => {
         const next = prev.map(t => t.key === thread.key ? { ...t, unreadCount: 0 } : t)
         const newTotal = next.reduce((acc, t) => acc + t.unreadCount, 0)
@@ -89,7 +151,6 @@ export default function Inbox() {
         return next
       })
 
-      // Persist to DB — Navbar's UPDATE listener will re-fetch and confirm
       await supabase
         .from('messages')
         .update({ is_read: true })
@@ -126,6 +187,10 @@ export default function Inbox() {
             const isLastFromMe = thread.lastMessage.sender_id === user.id
             const avatarUrl    = thread.otherUser.avatar_url
             const initial      = thread.otherUser.full_name?.charAt(0).toUpperCase() || '?'
+            const isResolved   = thread.post?.status === 'resolved'
+            const category     = thread.post?.category || 'Other'
+            const catColor     = CAT_COLOR[category] || CAT_COLOR.Other
+            const catBg        = CAT_BG[category]    || CAT_BG.Other
 
             return (
               <button
@@ -145,47 +210,64 @@ export default function Inbox() {
                 onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.10)' }}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.05)' }}
               >
-                {/* Avatar with online dot */}
+                {/* Avatar — green dot only when online */}
                 <div style={{ position: 'relative', flexShrink: 0 }}>
                   <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 16, overflow: 'hidden' }}>
                     {avatarUrl
                       ? <img src={avatarUrl} alt={thread.otherUser.full_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       : initial}
                   </div>
-                  <span style={{
-                    position: 'absolute', bottom: 1, right: 1,
-                    width: 12, height: 12, borderRadius: '50%',
-                    background: isOnline ? '#16A34A' : '#DC2626',
-                    border: `2px solid ${hasUnread ? '#F0F7FF' : '#fff'}`,
-                    transition: 'background 0.3s',
-                  }} />
+                  {isOnline && (
+                    <span style={{
+                      position: 'absolute', bottom: 1, right: 1,
+                      width: 12, height: 12, borderRadius: '50%',
+                      background: '#16A34A',
+                      border: `2px solid ${hasUnread ? '#F0F7FF' : '#fff'}`,
+                    }} />
+                  )}
                 </div>
 
                 {/* Content */}
                 <div style={{ flex: 1, minWidth: 0 }}>
+                  {/* Row 1: name + timestamp */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-                      <span style={{ fontSize: 14, fontWeight: hasUnread ? 700 : 600, color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {thread.otherUser.full_name}
-                      </span>
-                      <span style={{ fontSize: 10, color: isOnline ? '#16A34A' : '#DC2626', fontWeight: 600, flexShrink: 0 }}>
-                        {isOnline ? '● Online' : '● Offline'}
-                      </span>
-                    </div>
+                    <span style={{ fontSize: 14, fontWeight: hasUnread ? 700 : 600, color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {thread.otherUser.full_name}
+                    </span>
                     <span style={{ fontSize: 11, color: hasUnread ? '#2563EB' : '#94A3B8', flexShrink: 0, marginLeft: 8, fontWeight: hasUnread ? 600 : 400 }}>
                       {formatTime(thread.lastMessage.sent_at)}
                     </span>
                   </div>
 
+                  {/* Row 2: category icon + post title + resolved/type badge */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 3 }}>
-                    <span style={{ fontSize: 11, color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      Re: {thread.post?.title}
+                    {/* Category icon pill */}
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      background: isResolved ? '#F1F5F9' : catBg,
+                      borderRadius: 99, padding: '2px 7px 2px 5px',
+                      flexShrink: 0,
+                    }}>
+                      {isResolved
+                        ? (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 12, height: 12, flexShrink: 0 }}>
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )
+                        : getCatIcon(category, 12)
+                      }
+                      <span style={{ fontSize: 10, fontWeight: 600, color: isResolved ? '#64748B' : catColor }}>
+                        {isResolved ? 'Resolved' : category}
+                      </span>
                     </span>
-                    <span style={{ fontSize: 10, fontWeight: 600, padding: '1px 6px', borderRadius: 99, flexShrink: 0, ...(thread.post?.type === 'lost' ? { background: '#FEF2F2', color: '#991B1B' } : { background: '#F0FDF4', color: '#166534' }) }}>
-                      {thread.post?.type}
+
+                    {/* Post title */}
+                    <span style={{ fontSize: 11, color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {thread.post?.title}
                     </span>
                   </div>
 
+                  {/* Row 3: last message preview */}
                   <p style={{ fontSize: 13, color: hasUnread ? '#1E40AF' : '#64748B', fontWeight: hasUnread ? 500 : 400, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {isLastFromMe ? <span style={{ color: '#94A3B8' }}>You: </span> : null}
                     {thread.lastMessage.content}
